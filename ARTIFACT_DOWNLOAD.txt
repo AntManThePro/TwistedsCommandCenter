@@ -1,0 +1,16 @@
+NEXUS Portfolio Artifact (Download)
+
+Files:
+- index.html
+- styles.css
+- app.js
+
+How to run:
+1. Open index.html directly in a browser, or
+2. From this folder run: python3 -m http.server 4173
+3. Visit: http://localhost:4173
+
+What you get:
+- Neural Forge (interactive live classifier training)
+- Algorithm Arena (sorting visualizer)
+- Systems Pulse (real-time particle mesh)
