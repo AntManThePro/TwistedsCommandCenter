@@ -209,7 +209,7 @@ function trainStep() {
   if (!training || points.length === 0) return;
   const lr = Number(lrInput.value);
   for (let i = 0; i < 12; i += 1) {
-    const sample = points[(Math.random() * points.length) | 0];
+    const sample = points[Math.floor(Math.random() * points.length)];
     const nx = sample.x / neuralCanvas.width;
     const ny = sample.y / neuralCanvas.height;
     const pred = neuralPredict(sample.x, sample.y);
@@ -311,7 +311,7 @@ function buildPattern(size, pattern) {
   }
   const next = Array.from({ length: size }, (_, i) => i + 1);
   for (let i = next.length - 1; i > 0; i -= 1) {
-    const j = (Math.random() * (i + 1)) | 0;
+    const j = Math.floor(Math.random() * (i + 1));
     [next[i], next[j]] = [next[j], next[i]];
   }
   return next;
@@ -370,8 +370,7 @@ function drawArray(highlight = -1, pivotIndex = -1) {
 async function quickSortVisual(l = 0, r = arr.length - 1) {
   if (l >= r) return;
   const p = await partition(l, r);
-  await quickSortVisual(l, p - 1);
-  await quickSortVisual(p + 1, r);
+  await Promise.all([quickSortVisual(l, p - 1), quickSortVisual(p + 1, r)]);
 }
 
 async function partition(l, r) {
@@ -427,9 +426,9 @@ sortBtn.addEventListener('click', async () => {
   } else {
     await mergeSortVisual();
   }
-  sorting = false;
   updateAlgorithmReadout();
   drawArray();
+  sorting = false;
 });
 
 // Systems Pulse
