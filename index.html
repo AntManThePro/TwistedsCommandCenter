@@ -20,6 +20,38 @@
     </header>
 
     <main>
+      <section class="mission-deck panel">
+        <div>
+          <h2>Adaptive Mission Deck</h2>
+          <p>
+            A living recruiter-ready control surface that learns from interaction patterns and can export a
+            downloadable artifact of the session.
+          </p>
+        </div>
+        <div class="deck-grid">
+          <div class="deck-card">
+            <span class="deck-label">User Style</span>
+            <strong id="profile-style">Direct Action</strong>
+          </div>
+          <div class="deck-card">
+            <span class="deck-label">Complexity</span>
+            <strong id="profile-complexity">Tactical</strong>
+          </div>
+          <div class="deck-card">
+            <span class="deck-label">Curiosity</span>
+            <strong id="profile-curiosity">0%</strong>
+          </div>
+          <div class="deck-card">
+            <span class="deck-label">Favorite Arena</span>
+            <strong id="profile-favorite">Neural Forge</strong>
+          </div>
+        </div>
+        <div class="controls">
+          <button id="download-artifact">Download Artifact</button>
+          <button id="reset-profile">Reset Adaptive Profile</button>
+        </div>
+      </section>
+
       <section id="neural" class="view active">
         <div class="panel">
           <h2>Neural Forge</h2>
@@ -41,6 +73,11 @@
             <button id="train-btn">Train</button>
             <button id="reset-neural">Reset</button>
           </div>
+          <div class="readout-grid">
+            <div class="readout">Samples <strong id="sample-count">0</strong></div>
+            <div class="readout">Epochs <strong id="epoch-count">0</strong></div>
+            <div class="readout">Accuracy <strong id="accuracy-value">0%</strong></div>
+          </div>
         </div>
         <canvas id="neural-canvas" width="960" height="540"></canvas>
       </section>
@@ -58,6 +95,13 @@
                 <option value="merge">Merge Sort</option>
               </select>
             </label>
+            <label>Pattern
+              <select id="pattern-select">
+                <option value="random">Random</option>
+                <option value="wave">Waveform</option>
+                <option value="reverse">Reverse</option>
+              </select>
+            </label>
             <label>Size
               <input id="array-size" type="range" min="20" max="180" value="80" />
             </label>
@@ -65,7 +109,11 @@
             <button id="shuffle-btn">Shuffle</button>
             <button id="sort-btn">Sort</button>
           </div>
-          <div class="stats">Operations: <span id="operations">0</span></div>
+          <div class="readout-grid">
+            <div class="readout">Operations <strong id="operations">0</strong></div>
+            <div class="readout">Sorted <strong id="sorted-value">0%</strong></div>
+            <div class="readout">Pattern <strong id="pattern-value">Random</strong></div>
+          </div>
         </div>
         <canvas id="algo-canvas" width="960" height="420"></canvas>
       </section>
@@ -74,8 +122,16 @@
         <div class="panel">
           <h2>Systems Pulse</h2>
           <p>
-            Particle mesh reacts to cursor movement and generates a dynamic hardware/software systems pulse.
+            Particle mesh reacts to cursor movement and tap-to-inject pulses, generating a dynamic
+            hardware/software signal field.
           </p>
+          <div class="controls">
+            <button id="pulse-btn">Inject Pulse</button>
+          </div>
+          <div class="readout-grid">
+            <div class="readout">Pulses <strong id="pulse-count">0</strong></div>
+            <div class="readout">Resonance <strong id="resonance-value">0.00</strong></div>
+          </div>
         </div>
         <canvas id="systems-canvas" width="960" height="540"></canvas>
       </section>
