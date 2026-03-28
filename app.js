@@ -80,13 +80,19 @@ function drawNeural() {
 
   for (let y = 0; y < neuralCanvas.height; y += 4) {
     for (let x = 0; x < neuralCanvas.width; x += 4) {
-      const idx = (y * neuralCanvas.width + x) * 4;
       const pred = neuralPredict(x, y);
-      const c = pred === 1 ? [0, 255, 135] : [255, 0, 128];
-      img.data[idx] = c[0];
-      img.data[idx + 1] = c[1];
-      img.data[idx + 2] = c[2];
-      img.data[idx + 3] = 42;
+      const r = pred === 1 ? 0 : 255;
+      const g = pred === 1 ? 255 : 0;
+      const b = pred === 1 ? 135 : 128;
+      for (let dy = 0; dy < 4 && y + dy < neuralCanvas.height; dy++) {
+        for (let dx = 0; dx < 4 && x + dx < neuralCanvas.width; dx++) {
+          const idx = ((y + dy) * neuralCanvas.width + (x + dx)) * 4;
+          img.data[idx] = r;
+          img.data[idx + 1] = g;
+          img.data[idx + 2] = b;
+          img.data[idx + 3] = 42;
+        }
+      }
     }
   }
   nctx.putImageData(img, 0, 0);

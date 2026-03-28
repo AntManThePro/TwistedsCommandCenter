@@ -15,6 +15,7 @@ function mapCanvasPoint(event: React.PointerEvent<HTMLCanvasElement>, canvas: HT
 
 const NeuralForge = memo(function NeuralForge() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const pointsRef = useRef<Point[]>([]);
   const weightsRef = useRef<number[]>([Math.random() * 2 - 1, Math.random() * 2 - 1, 0]);
   const trainingRef = useRef(false);
@@ -38,7 +39,7 @@ const NeuralForge = memo(function NeuralForge() {
   const drawFrame = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = ctxRef.current;
     if (!ctx) return;
 
     const img = ctx.createImageData(canvas.width, canvas.height);
@@ -90,6 +91,9 @@ const NeuralForge = memo(function NeuralForge() {
   }, [predict]);
 
   useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    ctxRef.current = canvas.getContext('2d');
     let frameCount = 0;
     const tick = () => {
       trainStep();

@@ -20,8 +20,13 @@ function createParticles(count: number, w: number, h: number): Particle[] {
   }));
 }
 
+const MAX_SPEED = 2.5;
+const CONNECT_DIST = 90;
+const CONNECT_DIST_SQ = CONNECT_DIST * CONNECT_DIST;
+
 const SystemsPulse = memo(function SystemsPulse() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const particlesRef = useRef<Particle[]>([]);
   const mouseRef = useRef({ x: 480, y: 270 });
   const animationIdRef = useRef<number>(0);
@@ -34,17 +39,23 @@ const SystemsPulse = memo(function SystemsPulse() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    ctxRef.current = canvas.getContext('2d');
     particlesRef.current = createParticles(95, canvas.width, canvas.height);
+
+    // Reusable buckets for batching line strokes by quantised alpha (0.1 steps → ≤10 buckets).
+    // Each bucket stores flat [x1, y1, x2, y2, …] coordinates.
+    const alphaBuckets = new Map<number, number[]>();
 
     let frame = 0;
     const draw = () => {
-      const ctx = canvas.getContext('2d');
+      const ctx = ctxRef.current;
       if (!ctx) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const ps = particlesRef.current;
       let totalResonance = 0;
 
+      // --- Update + draw particles ---
       for (let i = 0; i < ps.length; i++) {
         const p = ps[i];
         p.x += p.vx;
@@ -61,6 +72,14 @@ const SystemsPulse = memo(function SystemsPulse() {
           p.vy += (dym / dm) * 0.01;
         }
 
+        // Clamp speed so particles don't accelerate indefinitely near the cursor.
+        const speed = Math.hypot(p.vx, p.vy);
+        if (speed > MAX_SPEED) {
+          const inv = MAX_SPEED / speed;
+          p.vx *= inv;
+          p.vy *= inv;
+        }
+
         if (p.pulse > 0) {
           p.pulse -= 0.05;
           totalResonance += p.pulse;
@@ -71,22 +90,37 @@ const SystemsPulse = memo(function SystemsPulse() {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r + (p.pulse > 0 ? p.pulse * 2 : 0), 0, Math.PI * 2);
         ctx.fill();
+      }
 
+      // --- Batch connection lines by quantised alpha (≤10 stroke() calls instead of O(n²)) ---
+      alphaBuckets.clear();
+      for (let i = 0; i < ps.length; i++) {
         for (let j = i + 1; j < ps.length; j++) {
-          const q = ps[j];
-          const dx = p.x - q.x;
-          const dy = p.y - q.y;
-          const d = Math.hypot(dx, dy);
-          if (d < 90) {
-            ctx.strokeStyle = `rgba(255, 0, 128, ${1 - d / 90})`;
-            ctx.lineWidth = 0.8;
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(q.x, q.y);
-            ctx.stroke();
+          const dx = ps[i].x - ps[j].x;
+          const dy = ps[i].y - ps[j].y;
+          const dSq = dx * dx + dy * dy;
+          if (dSq < CONNECT_DIST_SQ) {
+            const d = Math.sqrt(dSq);
+            // Quantise to 0.1 steps to limit bucket count.
+            const key = Math.round((1 - d / CONNECT_DIST) * 10) / 10;
+            let bucket = alphaBuckets.get(key);
+            if (!bucket) { bucket = []; alphaBuckets.set(key, bucket); }
+            bucket.push(ps[i].x, ps[i].y, ps[j].x, ps[j].y);
           }
         }
       }
+      ctx.strokeStyle = 'rgb(255, 0, 128)';
+      ctx.lineWidth = 0.8;
+      for (const [a, coords] of alphaBuckets) {
+        ctx.globalAlpha = a;
+        ctx.beginPath();
+        for (let k = 0; k < coords.length; k += 4) {
+          ctx.moveTo(coords[k], coords[k + 1]);
+          ctx.lineTo(coords[k + 2], coords[k + 3]);
+        }
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
 
       frame++;
       if (frame % 30 === 0) {

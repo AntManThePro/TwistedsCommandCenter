@@ -27,6 +27,7 @@ function sortedness(arr: number[]): number {
 
 const AlgorithmArena = memo(function AlgorithmArena() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const arrRef = useRef<number[]>([]);
   const sortingRef = useRef(false);
   const opsRef = useRef(0);
@@ -41,7 +42,7 @@ const AlgorithmArena = memo(function AlgorithmArena() {
   const drawArray = useCallback((highlight = -1) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = ctxRef.current;
     if (!ctx) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const arr = arrRef.current;
@@ -68,6 +69,8 @@ const AlgorithmArena = memo(function AlgorithmArena() {
   );
 
   useEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas) ctxRef.current = canvas.getContext('2d');
     resetArray(size, pattern);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
