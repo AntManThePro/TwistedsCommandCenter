@@ -1,6 +1,15 @@
 const views = Array.from(document.querySelectorAll('.view'));
 const navButtons = Array.from(document.querySelectorAll('.nav-btn'));
 const PROFILE_KEY = 'nexus-adaptive-profile';
+const DEFAULT_PROFILE = {
+  viewVisits: { neural: 1, algorithms: 0, systems: 0 },
+  neuralDrops: 0,
+  trainingToggles: 0,
+  sorts: 0,
+  pulses: 0,
+  patternUsage: { random: 1, wave: 0, reverse: 0 },
+  algorithmUsage: { quick: 0, merge: 0 },
+};
 
 function mapCanvasPoint(event, canvas) {
   const rect = canvas.getBoundingClientRect();
@@ -9,22 +18,42 @@ function mapCanvasPoint(event, canvas) {
   return { x, y };
 }
 
+function numberOrDefault(value, fallback) {
+  return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
+}
+
+function normalizeBucket(source, defaults) {
+  const bucket = source && typeof source === 'object' && !Array.isArray(source) ? source : {};
+  return Object.fromEntries(
+    Object.entries(defaults).map(([key, value]) => [key, numberOrDefault(bucket[key], value)]),
+  );
+}
+
+function normalizeProfile(saved) {
+  const source = saved && typeof saved === 'object' && !Array.isArray(saved) ? saved : {};
+  return {
+    viewVisits: normalizeBucket(source.viewVisits, DEFAULT_PROFILE.viewVisits),
+    neuralDrops: numberOrDefault(source.neuralDrops, DEFAULT_PROFILE.neuralDrops),
+    trainingToggles: numberOrDefault(source.trainingToggles, DEFAULT_PROFILE.trainingToggles),
+    sorts: numberOrDefault(source.sorts, DEFAULT_PROFILE.sorts),
+    pulses: numberOrDefault(source.pulses, DEFAULT_PROFILE.pulses),
+    patternUsage: normalizeBucket(source.patternUsage, DEFAULT_PROFILE.patternUsage),
+    algorithmUsage: normalizeBucket(source.algorithmUsage, DEFAULT_PROFILE.algorithmUsage),
+  };
+}
+
 function loadProfile() {
   try {
     const saved = JSON.parse(window.localStorage.getItem(PROFILE_KEY) || 'null');
-    if (saved) return saved;
+    if (saved) {
+      const normalized = normalizeProfile(saved);
+      window.localStorage.setItem(PROFILE_KEY, JSON.stringify(normalized));
+      return normalized;
+    }
   } catch (error) {
     console.warn('Profile restore failed', error);
   }
-  return {
-    viewVisits: { neural: 1, algorithms: 0, systems: 0 },
-    neuralDrops: 0,
-    trainingToggles: 0,
-    sorts: 0,
-    pulses: 0,
-    patternUsage: { random: 1, wave: 0, reverse: 0 },
-    algorithmUsage: { quick: 0, merge: 0 },
-  };
+  return normalizeProfile(DEFAULT_PROFILE);
 }
 
 let profile = loadProfile();
@@ -160,15 +189,7 @@ navButtons.forEach((btn) => {
 });
 
 resetProfileBtn.addEventListener('click', () => {
-  profile = {
-    viewVisits: { neural: 1, algorithms: 0, systems: 0 },
-    neuralDrops: 0,
-    trainingToggles: 0,
-    sorts: 0,
-    pulses: 0,
-    patternUsage: { random: 1, wave: 0, reverse: 0 },
-    algorithmUsage: { quick: 0, merge: 0 },
-  };
+  profile = normalizeProfile(DEFAULT_PROFILE);
   persistProfile();
   renderProfile();
 });
