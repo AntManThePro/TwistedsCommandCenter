@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+/* NEXUS Theme Custom Styles */
+@theme {
+  --color-nexus-bg: #0a0a0f;
+  --color-nexus-card: #12121a;
+  --color-nexus-border: #1e1e2e;
+  --color-nexus-accent: #00d4ff;
+  --color-nexus-purple: #7c3aed;
+  --color-nexus-text: #e2e8f0;
+  --color-nexus-muted: #64748b;
+  --color-nexus-success: #22c55e;
+  --color-nexus-warning: #eab308;
+  --color-nexus-danger: #ef4444;
+  --color-nexus-hover: #1a1a2e;
+}
+
+html {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  background-color: #0a0a0f;
+  color: #e2e8f0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e1e2e;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2e2e4e;
+}
+
+/* Glow effects */
+.glow-blue {
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.15);
+}
+
+.glow-purple {
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.15);
+}
+
+/* Custom animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(0, 212, 255, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.4); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
