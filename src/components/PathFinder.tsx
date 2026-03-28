@@ -63,6 +63,7 @@ function heuristic(r1: number, c1: number, r2: number, c2: number) {
 }
 
 const DIRS = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+const MAZE_DIRS: [number, number][] = [[-2, 0], [2, 0], [0, -2], [0, 2]];
 
 // ---------------------------------------------------------------------------
 // Algorithm runners — return ordered list of steps + final path
@@ -213,8 +214,6 @@ function generateMaze(): CellKind[][] {
   const stack: [number, number][] = [[1, 1]];
   visited.add('1,1');
   grid[1][1] = 0;
-
-  const MAZE_DIRS: [number, number][] = [[-2, 0], [2, 0], [0, -2], [0, 2]];
 
   while (stack.length > 0) {
     const [r, c] = stack[stack.length - 1];
@@ -504,8 +503,8 @@ const PathFinder = memo(function PathFinder() {
         return;
       }
 
-      const BATCH = Math.max(1, Math.floor(2 + state.visitedOrder.length / 200));
-      for (let b = 0; b < BATCH && state.stepIdx < state.visitedOrder.length; b++) {
+      const batchSize = Math.max(1, Math.floor(2 + state.visitedOrder.length / 200));
+      for (let b = 0; b < batchSize && state.stepIdx < state.visitedOrder.length; b++) {
         const [r, c] = state.visitedOrder[state.stepIdx++];
         if (g[r][c] !== 2 && g[r][c] !== 3) g[r][c] = 4;
       }

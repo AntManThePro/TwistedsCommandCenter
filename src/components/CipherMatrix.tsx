@@ -28,10 +28,11 @@ function xorEncode(text: string, key: string): string {
   const k = key || 'NEXUS';
   return text
     .split('')
-    .map((ch, i) => String.fromCharCode(ch.charCodeAt(0) ^ k.charCodeAt(i % k.length)))
-    .map(ch => {
-      const code = ch.charCodeAt(0);
-      return code >= 32 && code < 127 ? ch : `\\x${code.toString(16).padStart(2, '0')}`;
+    .map((ch, i) => {
+      const xored = ch.charCodeAt(0) ^ k.charCodeAt(i % k.length);
+      return xored >= 32 && xored < 127
+        ? String.fromCharCode(xored)
+        : `\\x${xored.toString(16).padStart(2, '0')}`;
     })
     .join('');
 }
@@ -157,11 +158,7 @@ const CipherMatrix = memo(function CipherMatrix() {
           const cy = col.y - i * 14;
           if (cy < -14 || cy > canvas.height + 14) continue;
           const brightness = 1 - i / col.chars.length;
-          const alpha = brightness * 0.85;
-          ctx.fillStyle = col.color.replace(')', `, ${alpha})`).replace('rgb', 'rgba').replace('#', 'rgba(')
-            || col.color;
-          // Simpler color fade
-          ctx.globalAlpha = alpha;
+          ctx.globalAlpha = brightness * 0.85;
           ctx.fillStyle = col.color;
           ctx.fillText(col.chars[i], col.x - 6, cy);
         }
