@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { PageId } from '../../types/inventory'
 import Sidebar from './Sidebar'
 import Header from './Header'
+import NexusBackground from '../shared/NexusBackground'
 
 interface LayoutProps {
   currentPage: PageId
@@ -14,24 +15,30 @@ export default function Layout({ currentPage, onNavigate, children }: LayoutProp
   const [searchQuery, setSearchQuery] = useState('')
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0a0a0f]">
-      <Sidebar
-        currentPage={currentPage}
-        onNavigate={onNavigate}
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
+    <div className="relative flex h-screen overflow-hidden bg-[#050510]">
+      {/* Animated neural network background */}
+      <NexusBackground />
 
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <Header
-          onMenuToggle={() => setSidebarOpen(prev => !prev)}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
+      {/* Content layer */}
+      <div className="relative z-10 flex w-full overflow-hidden">
+        <Sidebar
+          currentPage={currentPage}
+          onNavigate={onNavigate}
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
         />
 
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
-          {children}
-        </main>
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <Header
+            onMenuToggle={() => setSidebarOpen(prev => !prev)}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+          />
+
+          <main className="flex-1 overflow-y-auto p-4 sm:p-5">
+            {children}
+          </main>
+        </div>
       </div>
     </div>
   )

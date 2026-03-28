@@ -1,75 +1,183 @@
 @import "tailwindcss";
 
-/* NEXUS Theme Custom Styles */
+/* ═══════════════════════════════════════════════
+   NEXUS DESIGN SYSTEM — Twisted's Command Center
+   ═══════════════════════════════════════════════ */
 @theme {
-  --color-nexus-bg: #0a0a0f;
-  --color-nexus-card: #12121a;
-  --color-nexus-border: #1e1e2e;
-  --color-nexus-accent: #00d4ff;
-  --color-nexus-purple: #7c3aed;
+  /* Core bg */
+  --color-nexus-bg: #050510;
+  --color-nexus-bg2: #0a0a1f;
+  --color-nexus-card: #0d0d1e;
+  --color-nexus-border: #1a1a3e;
+  --color-nexus-hover: #12122a;
+
+  /* NEXUS palette */
+  --color-nexus-green: #00ff87;
+  --color-nexus-cyan: #60efff;
+  --color-nexus-pink: #ff0080;
+  --color-nexus-yellow: #ffcc00;
+  --color-nexus-purple: #8b5cf6;
+
+  /* Text */
   --color-nexus-text: #e2e8f0;
-  --color-nexus-muted: #64748b;
-  --color-nexus-success: #22c55e;
-  --color-nexus-warning: #eab308;
-  --color-nexus-danger: #ef4444;
-  --color-nexus-hover: #1a1a2e;
+  --color-nexus-muted: #4a5278;
+
+  /* Semantic */
+  --color-nexus-success: #00ff87;
+  --color-nexus-warning: #ffcc00;
+  --color-nexus-danger: #ff0080;
+  --color-nexus-info: #60efff;
 }
 
+/* ─── Base ─────────────────────────────────────── */
 html {
   font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
   margin: 0;
-  background-color: #0a0a0f;
+  background-color: #050510;
   color: #e2e8f0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* Cyber grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(96, 239, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(96, 239, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
 }
 
-::-webkit-scrollbar-track {
-  background: #0a0a0f;
-}
+/* ─── Scrollbar ─────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: #050510; }
+::-webkit-scrollbar-thumb { background: #1a1a3e; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(96, 239, 255, 0.3); }
 
-::-webkit-scrollbar-thumb {
-  background: #1e1e2e;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #2e2e4e;
-}
-
-/* Glow effects */
-.glow-blue {
-  box-shadow: 0 0 15px rgba(0, 212, 255, 0.15);
-}
-
-.glow-purple {
-  box-shadow: 0 0 15px rgba(124, 58, 237, 0.15);
-}
-
-/* Custom animations */
+/* ─── Animations ────────────────────────────────── */
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fade-in 0.35s ease-out; }
+
+@keyframes neon-pulse-cyan {
+  0%, 100% { box-shadow: 0 0 8px rgba(96, 239, 255, 0.3), 0 0 20px rgba(96, 239, 255, 0.1); }
+  50%       { box-shadow: 0 0 20px rgba(96, 239, 255, 0.6), 0 0 40px rgba(96, 239, 255, 0.2); }
+}
+.animate-pulse-glow { animation: neon-pulse-cyan 2.5s ease-in-out infinite; }
+
+@keyframes neon-pulse-green {
+  0%, 100% { box-shadow: 0 0 8px rgba(0, 255, 135, 0.3); }
+  50%       { box-shadow: 0 0 25px rgba(0, 255, 135, 0.7); }
+}
+.animate-pulse-green { animation: neon-pulse-green 2s ease-in-out infinite; }
+
+@keyframes neon-pulse-pink {
+  0%, 100% { box-shadow: 0 0 8px rgba(255, 0, 128, 0.3); }
+  50%       { box-shadow: 0 0 25px rgba(255, 0, 128, 0.7); }
 }
 
-.animate-fade-in {
-  animation: fade-in 0.3s ease-out;
+@keyframes scan-line {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(100vh); }
 }
 
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 5px rgba(0, 212, 255, 0.2); }
-  50% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.4); }
+@keyframes glitch {
+  0%, 95%, 100% { transform: translate(0); }
+  96%            { transform: translate(-2px, 1px); filter: hue-rotate(90deg); }
+  98%            { transform: translate(2px, -1px); filter: hue-rotate(-90deg); }
+}
+.text-glitch { animation: glitch 4s infinite; }
+
+@keyframes counter-in {
+  from { opacity: 0; transform: scale(0.8) translateY(5px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.animate-counter { animation: counter-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+@keyframes border-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
+@keyframes slide-right {
+  from { width: 0; }
+  to   { width: 100%; }
 }
+.animate-slide-right { animation: slide-right 1s ease-out forwards; }
+
+/* ─── Glow utilities ─────────────────────────────── */
+.glow-cyan  { box-shadow: 0 0 20px rgba(96, 239, 255, 0.25); }
+.glow-green { box-shadow: 0 0 20px rgba(0, 255, 135, 0.25); }
+.glow-pink  { box-shadow: 0 0 20px rgba(255, 0, 128, 0.25); }
+.glow-yellow{ box-shadow: 0 0 20px rgba(255, 204, 0, 0.25); }
+
+.text-glow-cyan  { text-shadow: 0 0 10px rgba(96, 239, 255, 0.8), 0 0 20px rgba(96, 239, 255, 0.4); }
+.text-glow-green { text-shadow: 0 0 10px rgba(0, 255, 135, 0.8), 0 0 20px rgba(0, 255, 135, 0.4); }
+.text-glow-pink  { text-shadow: 0 0 10px rgba(255, 0, 128, 0.8), 0 0 20px rgba(255, 0, 128, 0.4); }
+.text-glow-yellow{ text-shadow: 0 0 10px rgba(255, 204, 0, 0.8), 0 0 20px rgba(255, 204, 0, 0.4); }
+
+/* ─── NEXUS card ─────────────────────────────────── */
+.nexus-card {
+  background: linear-gradient(135deg, rgba(13,13,30,0.95), rgba(10,10,25,0.95));
+  border: 1px solid rgba(96, 239, 255, 0.12);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+.nexus-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(96,239,255,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ─── Neon button ────────────────────────────────── */
+.nexus-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+.nexus-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.4s ease;
+}
+.nexus-btn:hover::after { transform: translateX(100%); }
+
+/* ─── Scanline overlay (optional, add class) ─────── */
+.scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ─── Status dot pulse ───────────────────────────── */
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+.status-dot-live { animation: status-pulse 1.5s ease-in-out infinite; }
