@@ -85,23 +85,62 @@ function renderProfile() {
   profileFavoriteEl.textContent = profileFavoriteArena();
 }
 
+function ensureCounter(bucket, key) {
+  if (!bucket || typeof bucket !== 'object') {
+    return;
+  }
+  if (typeof bucket[key] !== 'number') {
+    bucket[key] = 0;
+  }
+}
+
 function recordProfile(type, detail) {
   switch (type) {
     case 'view':
+      if (!profile.viewVisits || typeof profile.viewVisits !== 'object') {
+        profile.viewVisits = {};
+      }
+      ensureCounter(profile.viewVisits, detail);
       profile.viewVisits[detail] += 1;
       break;
     case 'neural-drop':
+      if (typeof profile.neuralDrops !== 'number') {
+        profile.neuralDrops = 0;
+      }
       profile.neuralDrops += 1;
       break;
     case 'train-toggle':
+      if (typeof profile.trainingToggles !== 'number') {
+        profile.trainingToggles = 0;
+      }
       profile.trainingToggles += 1;
       break;
     case 'sort':
+      if (typeof profile.sorts !== 'number') {
+        profile.sorts = 0;
+      }
       profile.sorts += 1;
-      profile.algorithmUsage[detail.algorithm] += 1;
-      profile.patternUsage[detail.pattern] += 1;
+      if (!profile.algorithmUsage || typeof profile.algorithmUsage !== 'object') {
+        profile.algorithmUsage = {};
+      }
+      if (!profile.patternUsage || typeof profile.patternUsage !== 'object') {
+        profile.patternUsage = {};
+      }
+      if (detail && typeof detail === 'object') {
+        if (detail.algorithm != null) {
+          ensureCounter(profile.algorithmUsage, detail.algorithm);
+          profile.algorithmUsage[detail.algorithm] += 1;
+        }
+        if (detail.pattern != null) {
+          ensureCounter(profile.patternUsage, detail.pattern);
+          profile.patternUsage[detail.pattern] += 1;
+        }
+      }
       break;
     case 'pulse':
+      if (typeof profile.pulses !== 'number') {
+        profile.pulses = 0;
+      }
       profile.pulses += 1;
       break;
     default:
