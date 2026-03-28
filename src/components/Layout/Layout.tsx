@@ -12,7 +12,6 @@ interface LayoutProps {
 
 export default function Layout({ currentPage, onNavigate, children }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
 
   return (
     <div className="relative flex h-screen overflow-hidden bg-[#050510]">
@@ -31,8 +30,6 @@ export default function Layout({ currentPage, onNavigate, children }: LayoutProp
         <div className="flex flex-1 flex-col overflow-hidden">
           <Header
             onMenuToggle={() => setSidebarOpen(prev => !prev)}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
           />
 
           <main className="flex-1 overflow-y-auto p-4 sm:p-5">

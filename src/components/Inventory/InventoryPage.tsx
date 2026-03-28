@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import type { InventoryItem, ItemCategory } from '../../types/inventory'
+import type { InventoryItem, ItemCategory, ItemStatus } from '../../types/inventory'
 import { allCategories } from '../../data/mockData'
 import InventoryTable from './InventoryTable'
 import AddItemModal from './AddItemModal'
@@ -13,7 +13,7 @@ interface InventoryPageProps {
 export default function InventoryPage({ items, onAdd, onDelete }: InventoryPageProps) {
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<ItemCategory | ''>('')
-  const [statusFilter, setStatusFilter] = useState<string>('')
+  const [statusFilter, setStatusFilter] = useState<ItemStatus | ''>('')
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const filtered = useMemo(() => {
@@ -70,7 +70,7 @@ export default function InventoryPage({ items, onAdd, onDelete }: InventoryPageP
           {/* Status filter */}
           <select
             value={statusFilter}
-            onChange={e => setStatusFilter(e.target.value)}
+            onChange={e => setStatusFilter(e.target.value as ItemStatus | '')}
             className="rounded-lg border border-[#1e1e2e] bg-[#12121a] px-3 py-2 text-sm text-slate-300 outline-none transition-colors focus:border-cyan-500/50"
           >
             <option value="">All Status</option>

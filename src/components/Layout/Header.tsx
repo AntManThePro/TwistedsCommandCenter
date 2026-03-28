@@ -1,10 +1,12 @@
+import { useState } from 'react'
+
 interface HeaderProps {
   onMenuToggle: () => void
-  searchQuery: string
-  onSearchChange: (query: string) => void
 }
 
-export default function Header({ onMenuToggle, searchQuery, onSearchChange }: HeaderProps) {
+export default function Header({ onMenuToggle }: HeaderProps) {
+  const [searchQuery, setSearchQuery] = useState('')
+
   return (
     <header className="relative flex h-14 shrink-0 items-center gap-3 border-b border-[#1a1a3e] bg-[#050510]/90 px-4 backdrop-blur-xl sm:px-5">
       {/* Mobile menu button */}
@@ -44,8 +46,9 @@ export default function Header({ onMenuToggle, searchQuery, onSearchChange }: He
         <input
           type="text"
           value={searchQuery}
-          onChange={e => onSearchChange(e.target.value)}
+          onChange={e => setSearchQuery(e.target.value)}
           placeholder="Search systems..."
+          aria-label="Search"
           className="w-full rounded-lg border border-[#1a1a3e] bg-[#0d0d1e] py-1.5 pl-8 pr-3 text-xs text-slate-300 placeholder-[#2a2a4e] outline-none transition-all focus:border-[#60efff]/40 focus:shadow-[0_0_10px_rgba(96,239,255,0.1)]"
         />
       </div>

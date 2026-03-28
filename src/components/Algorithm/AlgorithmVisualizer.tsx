@@ -253,17 +253,30 @@ function randArray(n: number): number[] {
   return Array.from({ length: n }, () => Math.floor(Math.random() * 98) + 3)
 }
 
+interface VizState {
+  stepIdx: number
+  totalSteps: number
+  comparisons: number
+  swaps: number
+  elapsed: number
+  done: boolean
+}
+
+const initialVizState: VizState = {
+  stepIdx: 0,
+  totalSteps: 0,
+  comparisons: 0,
+  swaps: 0,
+  elapsed: 0,
+  done: false,
+}
+
 export default function AlgorithmVisualizer() {
   const [algo, setAlgo] = useState<AlgoId>('bubble')
   const [arraySize, setArraySize] = useState(60)
   const [speed, setSpeed] = useState(30)
   const [running, setRunning] = useState(false)
-  const [done, setDone] = useState(false)
-  const [stepIdx, setStepIdx] = useState(0)
-  const [totalSteps, setTotalSteps] = useState(0)
-  const [comparisons, setComparisons] = useState(0)
-  const [swaps, setSwaps] = useState(0)
-  const [elapsed, setElapsed] = useState(0)
+  const [viz, setViz] = useState<VizState>(initialVizState)
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const stepsRef = useRef<Step[]>([])
@@ -278,12 +291,7 @@ export default function AlgorithmVisualizer() {
     const arr = randArray(size)
     stepsRef.current = GENERATORS[algoId](arr)
     currentStepRef.current = 0
-    setStepIdx(0)
-    setTotalSteps(stepsRef.current.length)
-    setComparisons(0)
-    setSwaps(0)
-    setElapsed(0)
-    setDone(false)
+    setViz({ ...initialVizState, totalSteps: stepsRef.current.length })
 
     // Draw initial state
     const canvas = canvasRef.current
@@ -307,7 +315,7 @@ export default function AlgorithmVisualizer() {
       const steps = stepsRef.current
       if (idx >= steps.length) {
         setRunning(false)
-        setDone(true)
+        setViz(prev => ({ ...prev, done: true }))
         return
       }
 
@@ -315,10 +323,14 @@ export default function AlgorithmVisualizer() {
       const canvas = canvasRef.current
       if (canvas) drawBars(canvas, step, ALGO_INFO[algo].color)
 
-      setStepIdx(idx)
-      if (step.comparing.length > 0) setComparisons(c => c + 1)
-      if (step.swapping.length > 0) setSwaps(s => s + 1)
-      setElapsed(Math.round((Date.now() - startTimeRef.current) / 10) / 100)
+      const now = startTimeRef.current
+      setViz(prev => ({
+        ...prev,
+        stepIdx: idx,
+        comparisons: step.comparing.length > 0 ? prev.comparisons + 1 : prev.comparisons,
+        swaps: step.swapping.length > 0 ? prev.swaps + 1 : prev.swaps,
+        elapsed: Math.round((Date.now() - now) / 10) / 100,
+      }))
 
       currentStepRef.current = idx + 1
 
@@ -332,7 +344,7 @@ export default function AlgorithmVisualizer() {
   }, [])
 
   const start = useCallback(() => {
-    if (done) {
+    if (viz.done) {
       buildSteps(algo, arraySize)
       setTimeout(() => {
         setRunning(true)
@@ -345,7 +357,7 @@ export default function AlgorithmVisualizer() {
       startTimeRef.current = Date.now()
       rafRef.current = setTimeout(animate, 10)
     }
-  }, [algo, animate, arraySize, buildSteps, done])
+  }, [algo, animate, arraySize, buildSteps, viz.done])
 
   useEffect(() => {
     return () => { if (rafRef.current !== null) clearTimeout(rafRef.current) }
@@ -421,12 +433,12 @@ export default function AlgorithmVisualizer() {
           className="w-full"
           style={{ display: 'block', imageRendering: 'pixelated' }}
         />
-        {done && (
+        {viz.done && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-[1px]">
             <div className="text-center">
               <p className="text-2xl font-black text-glow-green text-[#00ff87]">SORTED ✓</p>
               <p className="text-xs text-[#4a5278] mt-1">
-                {comparisons} comparisons · {swaps} swaps · {elapsed}s
+                {viz.comparisons} comparisons · {viz.swaps} swaps · {viz.elapsed}s
               </p>
             </div>
           </div>
@@ -436,9 +448,9 @@ export default function AlgorithmVisualizer() {
       {/* Stats bar */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'Comparisons', value: comparisons, color: '#60efff' },
-          { label: 'Swaps',       value: swaps,       color: '#ff0080' },
-          { label: 'Time (s)',    value: elapsed,     color: '#ffcc00' },
+          { label: 'Comparisons', value: viz.comparisons, color: '#60efff' },
+          { label: 'Swaps',       value: viz.swaps,       color: '#ff0080' },
+          { label: 'Time (s)',    value: viz.elapsed,     color: '#ffcc00' },
         ].map(s => (
           <div key={s.label} className="nexus-card rounded-lg p-3 text-center">
             <p className="text-[10px] uppercase tracking-wider text-[#4a5278]">{s.label}</p>
@@ -450,12 +462,12 @@ export default function AlgorithmVisualizer() {
       </div>
 
       {/* Progress bar */}
-      {totalSteps > 0 && (
+      {viz.totalSteps > 0 && (
         <div className="h-1 w-full rounded-full bg-[#1a1a3e] overflow-hidden">
           <div
             className="h-full rounded-full transition-all"
             style={{
-              width: `${(stepIdx / totalSteps) * 100}%`,
+              width: `${(viz.stepIdx / viz.totalSteps) * 100}%`,
               background: `linear-gradient(90deg, ${info.color}, ${info.color}aa)`,
               boxShadow: `0 0 8px ${info.color}88`,
             }}
@@ -503,7 +515,7 @@ export default function AlgorithmVisualizer() {
               onClick={start}
               className="nexus-btn flex-1 rounded-lg border border-[#00ff87]/30 bg-[#00ff87]/10 py-2 text-sm font-bold uppercase tracking-wider text-[#00ff87] transition-all hover:bg-[#00ff87]/20 hover:shadow-[0_0_20px_rgba(0,255,135,0.3)]"
             >
-              {done ? '↺ Replay' : '▶ Run'}
+              {viz.done ? '↺ Replay' : '▶ Run'}
             </button>
           ) : (
             <button

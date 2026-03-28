@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import type { InventoryItem, ActivityEntry, StatsData, ItemStatus } from '../types/inventory'
 import { mockInventoryItems, mockActivityEntries } from '../data/mockData'
 
@@ -11,6 +11,10 @@ function deriveStatus(quantity: number): ItemStatus {
 export function useInventory() {
   const [items, setItems] = useState<InventoryItem[]>(mockInventoryItems)
   const [activities, setActivities] = useState<ActivityEntry[]>(mockActivityEntries)
+  const itemsRef = useRef<InventoryItem[]>(mockInventoryItems)
+  useEffect(() => {
+    itemsRef.current = items
+  })
 
   const addItem = useCallback((item: Omit<InventoryItem, 'id' | 'status' | 'lastUpdated'>) => {
     const newItem: InventoryItem = {
@@ -40,7 +44,7 @@ export function useInventory() {
     return newItem
   }, [])
 
-  const updateItem = useCallback((id: string, updates: Partial<Omit<InventoryItem, 'id'>>) => {
+  const updateItem = useCallback((id: string, updates: Partial<Omit<InventoryItem, 'id' | 'status' | 'lastUpdated'>>) => {
     setItems(prev =>
       prev.map(item => {
         if (item.id !== id) return item
@@ -55,26 +59,26 @@ export function useInventory() {
   }, [])
 
   const deleteItem = useCallback((id: string) => {
-    setItems(prev => {
-      const item = prev.find(i => i.id === id)
-      if (item) {
-        const activity: ActivityEntry = {
-          id: crypto.randomUUID(),
-          action: 'removed',
-          itemName: item.name,
-          details: `Removed from inventory`,
-          timestamp: new Date().toLocaleString('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-          }),
-        }
-        setActivities(prevAct => [activity, ...prevAct])
+    const item = itemsRef.current.find(i => i.id === id)
+
+    if (item) {
+      const activity: ActivityEntry = {
+        id: crypto.randomUUID(),
+        action: 'removed',
+        itemName: item.name,
+        details: `Removed from inventory`,
+        timestamp: new Date().toLocaleString('en-US', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
       }
-      return prev.filter(i => i.id !== id)
-    })
+      setActivities(prevAct => [activity, ...prevAct])
+    }
+
+    setItems(prev => prev.filter(i => i.id !== id))
   }, [])
 
   const stats: StatsData = useMemo(() => {

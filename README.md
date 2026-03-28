@@ -11,6 +11,8 @@ A production-ready inventory management dashboard built with the NEXUS dark aest
 
 ## Getting Started
 
+> **Requires Node.js `^20.19.0` or `>=22.12.0`** (Vite 8 requirement)
+
 ```bash
 npm install
 npm run dev

@@ -26,7 +26,7 @@ describe('StatusBadge', () => {
 
   it('includes a status dot indicator', () => {
     const { container } = render(<StatusBadge status="In Stock" />)
-    const dot = container.querySelector('.rounded-full')
+    const dot = container.querySelector('span.rounded-full')
     expect(dot).toBeInTheDocument()
   })
 })

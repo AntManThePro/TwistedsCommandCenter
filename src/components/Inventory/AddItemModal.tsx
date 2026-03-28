@@ -45,9 +45,14 @@ export default function AddItemModal({ isOpen, onClose, onAdd }: AddItemModalPro
       />
 
       {/* Modal */}
-      <div className="animate-fade-in relative w-full max-w-md rounded-xl border border-[#1e1e2e] bg-[#12121a] p-6 shadow-2xl">
+      <div
+        className="animate-fade-in relative w-full max-w-md rounded-xl border border-[#1e1e2e] bg-[#12121a] p-6 shadow-2xl"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-item-modal-title"
+      >
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-white">Add New Item</h2>
+          <h2 id="add-item-modal-title" className="text-lg font-semibold text-white">Add New Item</h2>
           <button
             onClick={onClose}
             className="rounded-lg p-1 text-slate-400 transition-colors hover:bg-[#1e1e2e] hover:text-white"
