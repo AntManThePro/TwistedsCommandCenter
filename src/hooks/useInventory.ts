@@ -85,9 +85,14 @@ export function useInventory() {
 
   const getStats = useCallback((): InventoryStats => {
     const total = artworks.length;
-    const availableCount = artworks.filter((a) => a.status === 'available').length;
-    const soldCount = artworks.filter((a) => a.status === 'sold').length;
-    const totalValue = artworks.reduce((sum, a) => sum + a.price, 0);
+    let availableCount = 0;
+    let soldCount = 0;
+    let totalValue = 0;
+    for (const a of artworks) {
+      if (a.status === 'available') availableCount++;
+      else if (a.status === 'sold') soldCount++;
+      totalValue += a.price;
+    }
     const avgPrice = total > 0 ? totalValue / total : 0;
     const conversionRate = total > 0 ? Math.round((soldCount / total) * 100) : 0;
 
