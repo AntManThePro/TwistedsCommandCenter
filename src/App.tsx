@@ -4,13 +4,15 @@ import ErrorBoundary from './components/ErrorBoundary';
 const NeuralForge = lazy(() => import('./components/NeuralForge'));
 const AlgorithmArena = lazy(() => import('./components/AlgorithmArena'));
 const SystemsPulse = lazy(() => import('./components/SystemsPulse'));
+const PathFinder = lazy(() => import('./components/PathFinder'));
+const CipherMatrix = lazy(() => import('./components/CipherMatrix'));
 const CommandCenter = lazy(() => import('./components/CommandCenter'));
 const Dashboard = lazy(() => import('./components/Dashboard'));
 const Gallery = lazy(() => import('./components/Gallery'));
 const QuickLister = lazy(() => import('./components/QuickLister'));
 
 type MainView = 'nexus' | 'inventory';
-type NexusTab = 'neural' | 'algorithms' | 'systems';
+type NexusTab = 'neural' | 'algorithms' | 'systems' | 'pathfinder' | 'cipher';
 type InventoryTab = 'command' | 'dashboard' | 'gallery' | 'listings';
 
 const LoadingSpinner: React.FC = () => (
@@ -80,6 +82,12 @@ export default function App() {
             <NavButton active={nexusTab === 'systems'} onClick={() => setNexusTab('systems')}>
               Systems Pulse
             </NavButton>
+            <NavButton active={nexusTab === 'pathfinder'} onClick={() => setNexusTab('pathfinder')}>
+              PathFinder
+            </NavButton>
+            <NavButton active={nexusTab === 'cipher'} onClick={() => setNexusTab('cipher')}>
+              CipherMatrix
+            </NavButton>
           </div>
         )}
 
@@ -111,6 +119,8 @@ export default function App() {
                 {nexusTab === 'neural' && <NeuralForge />}
                 {nexusTab === 'algorithms' && <AlgorithmArena />}
                 {nexusTab === 'systems' && <SystemsPulse />}
+                {nexusTab === 'pathfinder' && <PathFinder />}
+                {nexusTab === 'cipher' && <CipherMatrix />}
               </>
             )}
             {mainView === 'inventory' && (

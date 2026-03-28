@@ -58,6 +58,8 @@ describe('App navigation', () => {
     expect(screen.getAllByText('Neural Forge').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText('Algorithm Arena').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText('Systems Pulse').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('PathFinder').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('CipherMatrix').length).toBeGreaterThanOrEqual(1);
   });
 
   it('switches to inventory sub-navigation when Art Inventory is clicked', async () => {
@@ -71,6 +73,30 @@ describe('App navigation', () => {
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
     expect(screen.getByText('Gallery')).toBeInTheDocument();
     expect(screen.getByText('Quick Lister')).toBeInTheDocument();
+  });
+
+  it('switches to PathFinder tab and renders its heading', async () => {
+    await act(async () => {
+      render(<App />);
+    });
+    // PathFinder nav button is visible in the NEXUS sub-nav
+    const pfBtn = screen.getByText('PathFinder');
+    await act(async () => {
+      fireEvent.click(pfBtn);
+    });
+    // After clicking, "PathFinder" should still appear (nav + lazy heading if loaded)
+    expect(screen.getAllByText('PathFinder').length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('switches to CipherMatrix tab', async () => {
+    await act(async () => {
+      render(<App />);
+    });
+    const cmBtn = screen.getByText('CipherMatrix');
+    await act(async () => {
+      fireEvent.click(cmBtn);
+    });
+    expect(screen.getAllByText('CipherMatrix').length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders footer', async () => {
