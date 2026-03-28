@@ -6,13 +6,15 @@ const AlgorithmArena = lazy(() => import('./components/AlgorithmArena'));
 const SystemsPulse = lazy(() => import('./components/SystemsPulse'));
 const PathFinder = lazy(() => import('./components/PathFinder'));
 const CipherMatrix = lazy(() => import('./components/CipherMatrix'));
+const FractalEngine = lazy(() => import('./components/FractalEngine'));
+const BeatForge = lazy(() => import('./components/BeatForge'));
 const CommandCenter = lazy(() => import('./components/CommandCenter'));
 const Dashboard = lazy(() => import('./components/Dashboard'));
 const Gallery = lazy(() => import('./components/Gallery'));
 const QuickLister = lazy(() => import('./components/QuickLister'));
 
 type MainView = 'nexus' | 'inventory';
-type NexusTab = 'neural' | 'algorithms' | 'systems' | 'pathfinder' | 'cipher';
+type NexusTab = 'neural' | 'algorithms' | 'systems' | 'pathfinder' | 'cipher' | 'fractal' | 'beat';
 type InventoryTab = 'command' | 'dashboard' | 'gallery' | 'listings';
 
 const LoadingSpinner: React.FC = () => (
@@ -88,6 +90,12 @@ export default function App() {
             <NavButton active={nexusTab === 'cipher'} onClick={() => setNexusTab('cipher')}>
               CipherMatrix
             </NavButton>
+            <NavButton active={nexusTab === 'fractal'} onClick={() => setNexusTab('fractal')}>
+              Fractal Engine
+            </NavButton>
+            <NavButton active={nexusTab === 'beat'} onClick={() => setNexusTab('beat')}>
+              BeatForge
+            </NavButton>
           </div>
         )}
 
@@ -121,6 +129,8 @@ export default function App() {
                 {nexusTab === 'systems' && <SystemsPulse />}
                 {nexusTab === 'pathfinder' && <PathFinder />}
                 {nexusTab === 'cipher' && <CipherMatrix />}
+                {nexusTab === 'fractal' && <FractalEngine />}
+                {nexusTab === 'beat' && <BeatForge />}
               </>
             )}
             {mainView === 'inventory' && (

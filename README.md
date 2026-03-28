@@ -10,6 +10,8 @@ NEXUS interactive portfolio + Art Inventory Management System — built with Rea
 - **Systems Pulse** — Interactive particle mesh with pulse injection
 - **PathFinder** — Interactive maze + grid pathfinding (A\*, BFS, DFS, Dijkstra) with step-by-step canvas animation, wall drawing, random maze generator, and live statistics
 - **CipherMatrix** — Real-time encryption visualizer (Caesar, ROT-13, Vigenère, XOR, Base64, Binary, Atbash) with animated matrix data-rain canvas and diff-highlighted output
+- **Fractal Engine** — Real-time Mandelbrot/Julia/Burning-Ship fractal explorer with smooth coloring, zoom/pan, multiple palettes, and Julia constant presets
+- **BeatForge** — Web Audio API step sequencer: 5 tracks (kick, snare, hi-hat, bass, lead), 16 steps, synthesized entirely in-browser with BPM control, mute, randomize
 
 ### Art Inventory Management
 - **Command Center** — Full CRUD inventory with analytics canvas visualization
@@ -31,7 +33,7 @@ npm run dev
 npm test
 ```
 
-28 tests across hooks (useInventory, useListings) and components (ErrorBoundary, App navigation including PathFinder and CipherMatrix tabs).
+30 tests across hooks (useInventory, useListings) and components (ErrorBoundary, App navigation including all 7 NEXUS tabs).
 
 ## Build
 
@@ -86,7 +88,7 @@ vercel --prod dist/
 
 ## Performance
 
-- **Lazy loading**: Each view (NeuralForge, AlgorithmArena, SystemsPulse, PathFinder, CipherMatrix, CommandCenter, Dashboard, Gallery, QuickLister) is a separate chunk loaded on demand
+- **Lazy loading**: Each view (NeuralForge, AlgorithmArena, SystemsPulse, PathFinder, CipherMatrix, FractalEngine, BeatForge, CommandCenter, Dashboard, Gallery, QuickLister) is a separate chunk loaded on demand
 - **Memoization**: All components wrapped in `React.memo`; expensive computations use `useMemo`
 - **Canvas optimizations**: Uses `requestAnimationFrame` loop with ref-based state to avoid re-renders; canvas drawn only when active
 
@@ -110,6 +112,8 @@ src/
 │   ├── SystemsPulse.tsx       # Canvas particle mesh
 │   ├── PathFinder.tsx         # Interactive A*/BFS/DFS/Dijkstra grid visualizer
 │   ├── CipherMatrix.tsx       # Real-time cipher/encryption visualizer
+│   ├── FractalEngine.tsx      # Mandelbrot/Julia/Burning-Ship fractal explorer
+│   ├── BeatForge.tsx          # Web Audio API step sequencer
 │   ├── CommandCenter.tsx      # Inventory management UI
 │   ├── Dashboard.tsx          # Metrics dashboard
 │   ├── Gallery.tsx            # Client gallery
