@@ -45,10 +45,23 @@ function toBinary(text: string): string {
 }
 
 function toBase64(text: string): string {
+  // Prefer TextEncoder so arbitrary Unicode is supported without exceptions.
+  if (typeof TextEncoder !== 'undefined') {
+    const encoder = new TextEncoder();
+    const bytes = encoder.encode(text);
+    let binary = '';
+    for (let i = 0; i < bytes.length; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
+  // Fallbacks for environments without TextEncoder.
   try {
-    return btoa(unescape(encodeURIComponent(text)));
-  } catch {
     return btoa(text);
+  } catch {
+    // Last-resort legacy fallback; may not handle all inputs but avoids crashes.
+    return btoa(unescape(encodeURIComponent(text)));
   }
 }
 
