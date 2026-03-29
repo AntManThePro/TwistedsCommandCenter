@@ -244,8 +244,7 @@ const FractalEngine = memo(function FractalEngine() {
       window.removeEventListener('resize', resize);
       if (renderIdRef.current) clearTimeout(renderIdRef.current);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fractal, maxIter, palette, juliaCx, juliaCy, scheduleRender]);
 
   // Re-render when params change
   useEffect(() => {
