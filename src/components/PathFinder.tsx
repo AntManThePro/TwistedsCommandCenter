@@ -559,7 +559,7 @@ const PathFinder = memo(function PathFinder() {
     gridRef.current = newGrid;
     // Place start and end in open cells
     startRef.current = [1, 1];
-    endRef.current = [ROWS - 2, COLS - 2];
+    endRef.current = [ROWS - 3, COLS - 3];
     syncAndRender();
   }, [stopAnimation, syncAndRender]);
 
