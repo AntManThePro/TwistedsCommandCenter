@@ -203,24 +203,27 @@ const FractalEngine = memo(function FractalEngine() {
     setRendering(true);
 
     renderIdRef.current = setTimeout(() => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      try {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
 
-      const imgData = ctx.createImageData(canvas.width, canvas.height);
-      renderFractal(
-        imgData,
-        vpRef.current,
-        _fractal,
-        _maxIter,
-        PALETTES[_palette],
-        _juliaCx,
-        _juliaCy,
-      );
-      ctx.putImageData(imgData, 0, 0);
-      setRendering(false);
-      setZoomLevel(Math.round(vpRef.current.zoom));
+        const imgData = ctx.createImageData(canvas.width, canvas.height);
+        renderFractal(
+          imgData,
+          vpRef.current,
+          _fractal,
+          _maxIter,
+          PALETTES[_palette],
+          _juliaCx,
+          _juliaCy,
+        );
+        ctx.putImageData(imgData, 0, 0);
+        setZoomLevel(Math.round(vpRef.current.zoom));
+      } finally {
+        setRendering(false);
+      }
     }, 30);
   }, []);
 
