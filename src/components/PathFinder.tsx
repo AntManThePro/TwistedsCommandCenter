@@ -142,7 +142,6 @@ function runDFS(grid: CellKind[][], sr: number, sc: number, er: number, ec: numb
   const visitedOrder: [number, number][] = [];
   while (stack.length > 0) {
     const [r, c] = stack.pop()!;
-    if (visitedOrder.some(([vr, vc]) => vr === r && vc === c)) continue;
     visitedOrder.push([r, c]);
     if (r === er && c === ec) break;
     for (const [dr, dc] of DIRS) {
