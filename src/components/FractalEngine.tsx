@@ -417,7 +417,7 @@ const FractalEngine = memo(function FractalEngine() {
           width: '100%',
           borderRadius: '0.8rem',
           border: '1px solid var(--line)',
-          cursor: isPanRef.current ? 'grabbing' : 'crosshair',
+          cursor: 'crosshair',
           touchAction: 'none',
           display: 'block',
         }}
