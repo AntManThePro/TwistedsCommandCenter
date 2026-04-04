@@ -6,8 +6,9 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
+        manualChunks: (id: string) => {
+          if (/[\\/]node_modules[\\/]react(-dom)?[\\/]/.test(id)) return 'vendor';
+          return undefined;
         },
       },
     },
