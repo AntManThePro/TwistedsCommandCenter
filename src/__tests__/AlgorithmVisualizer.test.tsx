@@ -105,7 +105,7 @@ describe('AlgorithmVisualizer component', () => {
 
   it('renders speed and array-size sliders with accessible names', () => {
     render(<AlgorithmVisualizer />)
-    expect(screen.getByRole('slider', { name: /speed/i })).toBeInTheDocument()
+    expect(screen.getByRole('slider', { name: /animation speed/i })).toBeInTheDocument()
     expect(screen.getByRole('slider', { name: /array size/i })).toBeInTheDocument()
   })
 
