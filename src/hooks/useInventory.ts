@@ -45,6 +45,8 @@ export function useInventory() {
   }, [])
 
   const updateItem = useCallback((id: string, updates: Partial<Omit<InventoryItem, 'id' | 'status' | 'lastUpdated'>>) => {
+    let updatedItem: InventoryItem | null = null
+
     setItems(prev =>
       prev.map(item => {
         if (item.id !== id) return item
@@ -53,9 +55,27 @@ export function useInventory() {
           updated.status = deriveStatus(updates.quantity)
         }
         updated.lastUpdated = new Date().toISOString().split('T')[0]
+        updatedItem = updated
         return updated
       }),
     )
+
+    if (updatedItem) {
+      const activity: ActivityEntry = {
+        id: crypto.randomUUID(),
+        action: 'updated',
+        itemName: updatedItem.name,
+        details: `Updated item details`,
+        timestamp: new Date().toLocaleString('en-US', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+      }
+      setActivities(prev => [activity, ...prev])
+    }
   }, [])
 
   const deleteItem = useCallback((id: string) => {
