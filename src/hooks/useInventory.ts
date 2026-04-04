@@ -64,7 +64,7 @@ export function useInventory() {
       const activity: ActivityEntry = {
         id: crypto.randomUUID(),
         action: 'updated',
-        itemName: (updatedItem as InventoryItem).name,
+        itemName: updatedItem.name,
         details: `Updated item details`,
         timestamp: new Date().toLocaleString('en-US', {
           year: 'numeric',
