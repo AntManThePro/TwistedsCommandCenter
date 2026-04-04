@@ -189,10 +189,26 @@ const CipherMatrix = memo(function CipherMatrix() {
   }, []);
 
   const copyOutput = useCallback(() => {
-    navigator.clipboard.writeText(output).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    });
+    if (!navigator.clipboard || typeof navigator.clipboard.writeText !== 'function') {
+      console.error('Clipboard API is not available in this browser or context.');
+      if (typeof window !== 'undefined' && typeof window.alert === 'function') {
+        window.alert('Copy to clipboard is not supported in this browser or context.');
+      }
+      return;
+    }
+
+    navigator.clipboard
+      .writeText(output)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1800);
+      })
+      .catch((err) => {
+        console.error('Failed to copy text to clipboard:', err);
+        if (typeof window !== 'undefined' && typeof window.alert === 'function') {
+          window.alert('Failed to copy text to clipboard. Please try again manually.');
+        }
+      });
   }, [output]);
 
   // -------------------------------------------------------------------------
