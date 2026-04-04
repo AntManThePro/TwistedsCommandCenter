@@ -1,7 +1,9 @@
+import type { ReactNode } from 'react'
+
 interface StatsCardProps {
   title: string
   value: string | number
-  icon: React.ReactNode
+  icon: ReactNode
   accent: 'blue' | 'purple' | 'green' | 'yellow'
   subtitle?: string
 }
