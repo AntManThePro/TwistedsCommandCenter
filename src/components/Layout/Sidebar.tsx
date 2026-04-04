@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { PageId } from '../../types/inventory'
 
 interface SidebarProps {
@@ -7,7 +8,7 @@ interface SidebarProps {
   onClose: () => void
 }
 
-const navItems: { id: PageId; label: string; accent: string; icon: React.ReactNode }[] = [
+const navItems: { id: PageId; label: string; accent: string; icon: ReactNode }[] = [
   {
     id: 'dashboard',
     label: 'Dashboard',

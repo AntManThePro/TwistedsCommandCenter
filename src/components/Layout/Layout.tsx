@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { ReactNode } from 'react'
 import type { PageId } from '../../types/inventory'
 import Sidebar from './Sidebar'
 import Header from './Header'
@@ -7,7 +8,7 @@ import NexusBackground from '../shared/NexusBackground'
 interface LayoutProps {
   currentPage: PageId
   onNavigate: (page: PageId) => void
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export default function Layout({ currentPage, onNavigate, children }: LayoutProps) {

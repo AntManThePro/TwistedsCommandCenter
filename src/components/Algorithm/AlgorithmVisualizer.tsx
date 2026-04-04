@@ -469,7 +469,7 @@ export default function AlgorithmVisualizer() {
           <div
             className="h-full rounded-full transition-all"
             style={{
-              width: `${(viz.stepIdx / viz.totalSteps) * 100}%`,
+              width: `${((viz.stepIdx + 1) / viz.totalSteps) * 100}%`,
               background: `linear-gradient(90deg, ${info.color}, ${info.color}aa)`,
               boxShadow: `0 0 8px ${info.color}88`,
             }}
@@ -490,6 +490,7 @@ export default function AlgorithmVisualizer() {
             max={99}
             value={speed}
             onChange={e => setSpeed(Number(e.target.value))}
+            aria-label={`Speed: ${speed}x`}
             className="w-full accent-[#60efff]"
           />
         </div>
@@ -506,6 +507,7 @@ export default function AlgorithmVisualizer() {
             value={arraySize}
             disabled={running}
             onChange={e => setArraySize(Number(e.target.value))}
+            aria-label={`Array size: ${arraySize}`}
             className="w-full accent-[#00ff87] disabled:opacity-40"
           />
         </div>
