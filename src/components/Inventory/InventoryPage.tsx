@@ -7,14 +7,23 @@ import AddItemModal from './AddItemModal'
 interface InventoryPageProps {
   items: InventoryItem[]
   onAdd: (item: Omit<InventoryItem, 'id' | 'status' | 'lastUpdated'>) => void
+  onUpdate: (id: string, updates: Partial<Omit<InventoryItem, 'id'>>) => void
   onDelete: (id: string) => void
 }
 
-export default function InventoryPage({ items, onAdd, onDelete }: InventoryPageProps) {
+export default function InventoryPage({ items, onAdd, onUpdate, onDelete }: InventoryPageProps) {
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<ItemCategory | ''>('')
   const [statusFilter, setStatusFilter] = useState<string>('')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingItem, setEditingItem] = useState<InventoryItem | undefined>(undefined)
+  const [modalKey, setModalKey] = useState(0)
+
+  const openModal = (item?: InventoryItem) => {
+    setEditingItem(item)
+    setModalKey(prev => prev + 1)
+    setIsModalOpen(true)
+  }
 
   const filtered = useMemo(() => {
     return items.filter(item => {
@@ -81,7 +90,7 @@ export default function InventoryPage({ items, onAdd, onDelete }: InventoryPageP
         </div>
 
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => openModal()}
           className="flex items-center justify-center gap-2 rounded-lg bg-cyan-500 px-4 py-2 text-sm font-medium text-black transition-all hover:bg-cyan-400 hover:shadow-[0_0_20px_rgba(0,212,255,0.3)]"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -97,10 +106,21 @@ export default function InventoryPage({ items, onAdd, onDelete }: InventoryPageP
       </p>
 
       {/* Table */}
-      <InventoryTable items={filtered} onDelete={onDelete} />
+      <InventoryTable
+        items={filtered}
+        onEdit={item => openModal(item)}
+        onDelete={onDelete}
+      />
 
-      {/* Modal */}
-      <AddItemModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAdd={onAdd} />
+      {/* Modal (add or edit) — key forces remount on each open, resetting form state */}
+      <AddItemModal
+        key={modalKey}
+        isOpen={isModalOpen}
+        onClose={() => { setIsModalOpen(false); setEditingItem(undefined) }}
+        onAdd={onAdd}
+        editItem={editingItem}
+        onUpdate={onUpdate}
+      />
     </div>
   )
 }

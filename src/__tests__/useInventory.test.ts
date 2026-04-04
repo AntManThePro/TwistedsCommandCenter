@@ -113,4 +113,18 @@ describe('useInventory', () => {
     expect(result.current.activities[0].action).toBe('added')
     expect(result.current.activities[0].itemName).toBe('Activity Test')
   })
+
+  it('adds activity when deleting an item', () => {
+    const { result } = renderHook(() => useInventory())
+    const initialActivities = result.current.activities.length
+    const itemToDelete = result.current.items[0]
+
+    act(() => {
+      result.current.deleteItem(itemToDelete.id)
+    })
+
+    expect(result.current.activities.length).toBe(initialActivities + 1)
+    expect(result.current.activities[0].action).toBe('removed')
+    expect(result.current.activities[0].itemName).toBe(itemToDelete.name)
+  })
 })

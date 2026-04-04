@@ -3,10 +3,11 @@ import StatusBadge from './StatusBadge'
 
 interface InventoryTableProps {
   items: InventoryItem[]
+  onEdit: (item: InventoryItem) => void
   onDelete: (id: string) => void
 }
 
-export default function InventoryTable({ items, onDelete }: InventoryTableProps) {
+export default function InventoryTable({ items, onEdit, onDelete }: InventoryTableProps) {
   return (
     <div className="overflow-x-auto rounded-xl border border-[#1e1e2e] bg-[#12121a]">
       <table className="w-full min-w-[700px] text-left text-sm">
@@ -45,6 +46,13 @@ export default function InventoryTable({ items, onDelete }: InventoryTableProps)
                   <StatusBadge status={item.status} />
                 </td>
                 <td className="px-5 py-3 text-right">
+                  <button
+                    onClick={() => onEdit(item)}
+                    className="mr-1 rounded-md px-2 py-1 text-xs text-cyan-400 transition-colors hover:bg-cyan-500/10"
+                    aria-label={`Edit ${item.name}`}
+                  >
+                    Edit
+                  </button>
                   <button
                     onClick={() => onDelete(item.id)}
                     className="rounded-md px-2 py-1 text-xs text-red-400 transition-colors hover:bg-red-500/10"
