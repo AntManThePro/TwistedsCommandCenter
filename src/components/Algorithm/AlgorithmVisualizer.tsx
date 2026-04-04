@@ -148,7 +148,9 @@ function genQuick(arr: number[]): Step[] {
 
   const sort = (lo: number, hi: number) => {
     if (lo >= hi) {
-      sortedSet.add(lo)
+      if (lo === hi && lo >= 0 && lo < a.length) {
+        sortedSet.add(lo)
+      }
       return
     }
     const p = partition(lo, hi)
