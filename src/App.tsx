@@ -4,13 +4,14 @@ import ErrorBoundary from './components/ErrorBoundary';
 const NeuralForge = lazy(() => import('./components/NeuralForge'));
 const AlgorithmArena = lazy(() => import('./components/AlgorithmArena'));
 const SystemsPulse = lazy(() => import('./components/SystemsPulse'));
+const ArtDecoShowcase = lazy(() => import('./components/ArtDecoShowcase'));
 const CommandCenter = lazy(() => import('./components/CommandCenter'));
 const Dashboard = lazy(() => import('./components/Dashboard'));
 const Gallery = lazy(() => import('./components/Gallery'));
 const QuickLister = lazy(() => import('./components/QuickLister'));
 
 type MainView = 'nexus' | 'inventory';
-type NexusTab = 'neural' | 'algorithms' | 'systems';
+type NexusTab = 'neural' | 'algorithms' | 'systems' | 'artdeco';
 type InventoryTab = 'command' | 'dashboard' | 'gallery' | 'listings';
 
 const LoadingSpinner: React.FC = () => (
@@ -80,6 +81,9 @@ export default function App() {
             <NavButton active={nexusTab === 'systems'} onClick={() => setNexusTab('systems')}>
               Systems Pulse
             </NavButton>
+            <NavButton active={nexusTab === 'artdeco'} onClick={() => setNexusTab('artdeco')}>
+              Art Deco Showcase
+            </NavButton>
           </div>
         )}
 
@@ -111,6 +115,7 @@ export default function App() {
                 {nexusTab === 'neural' && <NeuralForge />}
                 {nexusTab === 'algorithms' && <AlgorithmArena />}
                 {nexusTab === 'systems' && <SystemsPulse />}
+                {nexusTab === 'artdeco' && <ArtDecoShowcase />}
               </>
             )}
             {mainView === 'inventory' && (
