@@ -532,6 +532,7 @@ export default function AlgorithmVisualizer() {
           )}
           <button
             onClick={reset}
+            aria-label="Reset visualization"
             className="nexus-btn rounded-lg border border-[#60efff]/20 px-3 py-2 text-sm font-bold uppercase tracking-wider text-[#4a5278] transition-all hover:border-[#60efff]/40 hover:text-[#60efff]"
           >
             ⟳
