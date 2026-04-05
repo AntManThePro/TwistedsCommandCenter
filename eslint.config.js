@@ -20,4 +20,22 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    files: ['src/__tests__/**/*.{ts,tsx}'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: {
+        ...globals.browser,
+        afterAll: 'readonly',
+        afterEach: 'readonly',
+        beforeAll: 'readonly',
+        beforeEach: 'readonly',
+        describe: 'readonly',
+        expect: 'readonly',
+        it: 'readonly',
+        test: 'readonly',
+        vi: 'readonly',
+      },
+    },
+  },
 ])
