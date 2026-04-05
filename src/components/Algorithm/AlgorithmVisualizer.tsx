@@ -317,7 +317,7 @@ export default function AlgorithmVisualizer() {
       const steps = stepsRef.current
       if (idx >= steps.length) {
         setRunning(false)
-        setViz(prev => ({ ...prev, done: true }))
+        setViz(prev => ({ ...prev, stepIdx: steps.length, done: true }))
         return
       }
 
