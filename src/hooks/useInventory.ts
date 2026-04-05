@@ -14,7 +14,7 @@ export function useInventory() {
   const itemsRef = useRef<InventoryItem[]>(mockInventoryItems)
   useEffect(() => {
     itemsRef.current = items
-  })
+  }, [items])
 
   const addItem = useCallback((item: Omit<InventoryItem, 'id' | 'status' | 'lastUpdated'>) => {
     const newItem: InventoryItem = {
