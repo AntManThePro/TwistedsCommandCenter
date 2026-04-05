@@ -48,17 +48,50 @@ export function useInventory() {
     let capturedItemName: string | null = null
 
     setItems(prev =>
-      prev.map(item => {
-        if (item.id !== id) return item
-        const updated = { ...item, ...updates }
-        if (updates.quantity !== undefined) {
-          updated.status = deriveStatus(updates.quantity)
-        }
-        updated.lastUpdated = new Date().toISOString().split('T')[0]
-        capturedItemName = updated.name
-        return updated
+    const item = itemsRef.current.find(i => i.id === id)
+
+    if (!item) return
+
+    const nextQuantity = updates.quantity ?? item.quantity
+    const nextStatus = updates.quantity !== undefined ? deriveStatus(updates.quantity) : item.status
+    const updated: InventoryItem = {
+      ...item,
+      ...updates,
+      status: nextStatus,
+      lastUpdated: new Date().toISOString().split('T')[0],
+    }
+
+    setItems(prev => prev.map(currentItem => (currentItem.id === id ? updated : currentItem)))
+
+    const action: ActivityEntry['action'] =
+      updates.quantity !== undefined &&
+      (item.status === 'Out of Stock' || item.status === 'Low Stock') &&
+      nextStatus === 'In Stock'
+        ? 'restocked'
+        : 'updated'
+
+    const details =
+      action === 'restocked'
+        ? `Restocked to ${nextQuantity} units`
+        : updates.quantity !== undefined
+          ? `Updated item details; quantity is now ${nextQuantity}`
+          : `Updated item details`
+
+    const activity: ActivityEntry = {
+      id: crypto.randomUUID(),
+      action,
+      itemName: updated.name,
+      details,
+      timestamp: new Date().toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
       }),
-    )
+    }
+
+    setActivities(prev => [activity, ...prev])
 
     if (capturedItemName) {
       const changedFields = Object.keys(updates)
