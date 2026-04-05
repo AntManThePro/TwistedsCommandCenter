@@ -45,56 +45,49 @@ export function useInventory() {
   }, [])
 
   const updateItem = useCallback((id: string, updates: Partial<Omit<InventoryItem, 'id' | 'status' | 'lastUpdated'>>) => {
-    let activity: ActivityEntry | null = null
+    const item = itemsRef.current.find(i => i.id === id)
 
-    setItems(prev => {
-      const item = prev.find(i => i.id === id)
+    if (!item) return
 
-      if (!item) return prev
-
-      const nextQuantity = updates.quantity ?? item.quantity
-      const nextStatus = updates.quantity !== undefined ? deriveStatus(updates.quantity) : item.status
-      const updated: InventoryItem = {
-        ...item,
-        ...updates,
-        status: nextStatus,
-        lastUpdated: new Date().toISOString().split('T')[0],
-      }
-
-      const action: ActivityEntry['action'] =
-        updates.quantity !== undefined &&
-        (item.status === 'Out of Stock' || item.status === 'Low Stock') &&
-        nextStatus === 'In Stock'
-          ? 'restocked'
-          : 'updated'
-
-      const details =
-        action === 'restocked'
-          ? `Restocked to ${nextQuantity} units`
-          : updates.quantity !== undefined
-            ? `Updated item details; quantity is now ${nextQuantity}`
-            : `Updated item details`
-
-      activity = {
-        id: crypto.randomUUID(),
-        action,
-        itemName: updated.name,
-        details,
-        timestamp: new Date().toLocaleString('en-US', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-      }
-
-      return prev.map(currentItem => (currentItem.id === id ? updated : currentItem))
-    })
-
-    if (activity) {
-      setActivities(prev => [activity, ...prev])
+    const nextQuantity = updates.quantity ?? item.quantity
+    const nextStatus = updates.quantity !== undefined ? deriveStatus(updates.quantity) : item.status
+    const updated: InventoryItem = {
+      ...item,
+      ...updates,
+      status: nextStatus,
+      lastUpdated: new Date().toISOString().split('T')[0],
     }
+
+    const action: ActivityEntry['action'] =
+      updates.quantity !== undefined &&
+      (item.status === 'Out of Stock' || item.status === 'Low Stock') &&
+      nextStatus === 'In Stock'
+        ? 'restocked'
+        : 'updated'
+
+    const details =
+      action === 'restocked'
+        ? `Restocked to ${nextQuantity} units`
+        : updates.quantity !== undefined
+          ? `Updated item details; quantity is now ${nextQuantity}`
+          : `Updated item details`
+
+    const activity: ActivityEntry = {
+      id: crypto.randomUUID(),
+      action,
+      itemName: updated.name,
+      details,
+      timestamp: new Date().toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+    }
+
+    setItems(prev => prev.map(currentItem => (currentItem.id === id ? updated : currentItem)))
+    setActivities(prev => [activity, ...prev])
   }, [])
 
   const deleteItem = useCallback((id: string) => {
