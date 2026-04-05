@@ -7,7 +7,7 @@ import InventoryPage from './components/Inventory/InventoryPage'
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageId>('dashboard')
-  const { items, activities, stats, addItem, deleteItem } = useInventory()
+  const { items, activities, stats, addItem, updateItem, deleteItem } = useInventory()
 
   const renderPage = () => {
     switch (currentPage) {
@@ -24,6 +24,7 @@ export default function App() {
           <InventoryPage
             items={items}
             onAdd={addItem}
+            onUpdate={updateItem}
             onDelete={deleteItem}
           />
         )

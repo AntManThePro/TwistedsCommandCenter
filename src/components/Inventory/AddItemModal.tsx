@@ -8,6 +8,8 @@ interface AddItemModalProps {
   isOpen: boolean
   onClose: () => void
   onAdd: (item: NewItemData) => void
+  editItem?: InventoryItem
+  onUpdate?: (id: string, updates: Partial<Omit<InventoryItem, 'id'>>) => void
 }
 
 const initialForm: NewItemData = {
@@ -18,16 +20,26 @@ const initialForm: NewItemData = {
   price: 0,
 }
 
-export default function AddItemModal({ isOpen, onClose, onAdd }: AddItemModalProps) {
-  const [form, setForm] = useState<NewItemData>(initialForm)
+export default function AddItemModal({ isOpen, onClose, onAdd, editItem, onUpdate }: AddItemModalProps) {
+  // Initialize from editItem when in edit mode; re-initialized fresh on each mount via the `key` prop in InventoryPage
+  const [form, setForm] = useState<NewItemData>(() =>
+    editItem
+      ? { name: editItem.name, sku: editItem.sku, category: editItem.category, quantity: editItem.quantity, price: editItem.price }
+      : initialForm,
+  )
 
   if (!isOpen) return null
+
+  const isEditMode = Boolean(editItem)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.name.trim() || !form.sku.trim()) return
-    onAdd(form)
-    setForm(initialForm)
+    if (isEditMode && editItem && onUpdate) {
+      onUpdate(editItem.id, form)
+    } else {
+      onAdd(form)
+    }
     onClose()
   }
 
@@ -47,7 +59,7 @@ export default function AddItemModal({ isOpen, onClose, onAdd }: AddItemModalPro
       {/* Modal */}
       <div className="animate-fade-in relative w-full max-w-md rounded-xl border border-[#1e1e2e] bg-[#12121a] p-6 shadow-2xl">
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-white">Add New Item</h2>
+          <h2 className="text-lg font-semibold text-white">{isEditMode ? 'Edit Item' : 'Add New Item'}</h2>
           <button
             onClick={onClose}
             className="rounded-lg p-1 text-slate-400 transition-colors hover:bg-[#1e1e2e] hover:text-white"
@@ -155,7 +167,7 @@ export default function AddItemModal({ isOpen, onClose, onAdd }: AddItemModalPro
               type="submit"
               className="flex-1 rounded-lg bg-cyan-500 px-4 py-2 text-sm font-medium text-black transition-all hover:bg-cyan-400 hover:shadow-[0_0_20px_rgba(0,212,255,0.3)]"
             >
-              Add Item
+              {isEditMode ? 'Save Changes' : 'Add Item'}
             </button>
           </div>
         </form>
