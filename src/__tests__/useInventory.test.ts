@@ -128,4 +128,17 @@ describe('useInventory', () => {
     expect(result.current.activities[0].action).toBe('updated')
     expect(result.current.activities[0].itemName).toBe(targetName)
   })
+
+  it('uses the updated name in activity when item name changes', () => {
+    const { result } = renderHook(() => useInventory())
+    const targetId = result.current.items[0].id
+    const renamed = 'Renamed Inventory Item'
+
+    act(() => {
+      result.current.updateItem(targetId, { name: renamed })
+    })
+
+    expect(result.current.activities[0].action).toBe('updated')
+    expect(result.current.activities[0].itemName).toBe(renamed)
+  })
 })
