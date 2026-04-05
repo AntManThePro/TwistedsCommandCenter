@@ -188,11 +188,11 @@ const ArtDecoShowcase = memo(function ArtDecoShowcase() {
   // initial mount).
   const requestRedraw = useCallback(() => {
     if (autoRotateRef.current) return; // loop handles it
-    if (needsRedrawRef.current) return; // already scheduled
-    needsRedrawRef.current = true;
+    if (!needsRedrawRef.current) return; // already scheduled
+    needsRedrawRef.current = false;
     requestAnimationFrame(() => {
-      needsRedrawRef.current = false;
       drawFrame();
+      needsRedrawRef.current = true;
     });
   }, [drawFrame]);
 
