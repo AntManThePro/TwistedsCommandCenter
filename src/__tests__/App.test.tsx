@@ -8,6 +8,7 @@ beforeAll(() => {
     clearRect: jest.fn(),
     fillRect: jest.fn(),
     beginPath: jest.fn(),
+    closePath: jest.fn(),
     arc: jest.fn(),
     fill: jest.fn(),
     stroke: jest.fn(),
@@ -58,6 +59,17 @@ describe('App navigation', () => {
     expect(screen.getAllByText('Neural Forge').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText('Algorithm Arena').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText('Systems Pulse').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Art Deco Showcase').length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('switches to Art Deco Showcase when the tab is clicked', async () => {
+    await act(async () => {
+      render(<App />);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText('Art Deco Showcase'));
+    });
+    expect(screen.getByText(/Art Deco Pyramid Jewelry Box/i)).toBeInTheDocument();
   });
 
   it('switches to inventory sub-navigation when Art Inventory is clicked', async () => {
