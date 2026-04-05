@@ -93,29 +93,6 @@ export function useInventory() {
     })
 
     if (activity) {
-      setActivities(prev => [activity!, ...prev])
-    }
-
-    setActivities(prev => [activity, ...prev])
-
-    if (capturedItemName) {
-      const changedFields = Object.keys(updates)
-      const detail = changedFields.length === 1 && changedFields[0] === 'quantity'
-        ? `Updated quantity to ${updates.quantity}`
-        : `Updated ${changedFields.join(', ')}`
-      const activity: ActivityEntry = {
-        id: crypto.randomUUID(),
-        action: 'updated',
-        itemName: capturedItemName,
-        details: detail,
-        timestamp: new Date().toLocaleString('en-US', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-      }
       setActivities(prev => [activity, ...prev])
     }
   }, [])
