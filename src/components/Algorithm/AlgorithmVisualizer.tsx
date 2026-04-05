@@ -356,10 +356,11 @@ export default function AlgorithmVisualizer() {
       }, 50)
     } else {
       setRunning(true)
-      startTimeRef.current = Date.now()
+      // Preserve accumulated elapsed time so the timer continues from where it paused
+      startTimeRef.current = Date.now() - viz.elapsed * 1000
       rafRef.current = setTimeout(animate, 10)
     }
-  }, [algo, animate, arraySize, buildSteps, viz.done])
+  }, [algo, animate, arraySize, buildSteps, viz.done, viz.elapsed])
 
   useEffect(() => {
     return () => { if (rafRef.current !== null) clearTimeout(rafRef.current) }
@@ -469,7 +470,7 @@ export default function AlgorithmVisualizer() {
           <div
             className="h-full rounded-full transition-all"
             style={{
-              width: `${(viz.stepIdx / viz.totalSteps) * 100}%`,
+              width: `${((viz.stepIdx + 1) / viz.totalSteps) * 100}%`,
               background: `linear-gradient(90deg, ${info.color}, ${info.color}aa)`,
               boxShadow: `0 0 8px ${info.color}88`,
             }}
@@ -489,6 +490,7 @@ export default function AlgorithmVisualizer() {
             min={1}
             max={99}
             value={speed}
+            aria-label={`Animation speed: ${speed}x`}
             onChange={e => setSpeed(Number(e.target.value))}
             className="w-full accent-[#60efff]"
           />
@@ -504,6 +506,7 @@ export default function AlgorithmVisualizer() {
             min={20}
             max={120}
             value={arraySize}
+            aria-label={`Array size: ${arraySize} elements`}
             disabled={running}
             onChange={e => setArraySize(Number(e.target.value))}
             className="w-full accent-[#00ff87] disabled:opacity-40"
