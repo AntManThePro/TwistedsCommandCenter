@@ -11,6 +11,10 @@ How to run:
 3. Visit: http://localhost:4173
 
 What you get:
-- Neural Forge (interactive live classifier training)
-- Algorithm Arena (sorting visualizer)
-- Systems Pulse (real-time particle mesh)
+- Neural Forge with live classifier telemetry (samples, epochs, accuracy)
+- Algorithm Arena with selectable data patterns and real-time sortedness tracking
+- Systems Pulse with tap-to-inject resonance waves for mobile and desktop
+- Adaptive Mission Deck that learns interaction style and exports a downloadable JSON artifact
+
+Downloadable upgrade:
+- Use the in-app "Download Artifact" button to export nexus-adaptive-artifact.json
