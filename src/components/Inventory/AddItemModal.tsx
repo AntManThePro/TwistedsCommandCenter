@@ -27,7 +27,14 @@ export default function AddItemModal({ isOpen, onClose, onAdd }: AddItemModalPro
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     if (!form.name.trim() || !form.sku.trim()) return
-    onAdd(form)
+
+    const normalizedForm: NewItemData = {
+      ...form,
+      quantity: Number.isFinite(form.quantity) ? form.quantity : 0,
+      price: Number.isFinite(form.price) ? form.price : 0,
+    }
+
+    onAdd(normalizedForm)
     setForm(initialForm)
     onClose()
   }
