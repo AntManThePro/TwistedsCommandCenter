@@ -2,12 +2,12 @@ const views = Array.from(document.querySelectorAll('.view'));
 const navButtons = Array.from(document.querySelectorAll('.nav-btn'));
 const PROFILE_KEY = 'nexus-adaptive-profile';
 const DEFAULT_PROFILE = {
-  viewVisits: { neural: 1, algorithms: 0, systems: 0 },
+  viewVisits: { neural: 0, algorithms: 0, systems: 0 },
   neuralDrops: 0,
   trainingToggles: 0,
   sorts: 0,
   pulses: 0,
-  patternUsage: { random: 1, wave: 0, reverse: 0 },
+  patternUsage: { random: 0, wave: 0, reverse: 0 },
   algorithmUsage: { quick: 0, merge: 0 },
 };
 
