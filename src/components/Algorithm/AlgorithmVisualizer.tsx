@@ -7,6 +7,11 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 
 type AlgoId = 'bubble' | 'selection' | 'insertion' | 'quick' | 'merge'
 
+/** Quadratic O(n²) algorithms are capped to this array size to avoid allocating
+ *  thousands of full-array copies and causing UI jank at large sizes. */
+const MAX_QUAD_SIZE = 80
+const QUADRATIC_ALGOS = new Set<AlgoId>(['bubble', 'selection', 'insertion'])
+
 interface Step {
   array: number[]
   comparing: number[]
@@ -290,7 +295,8 @@ export default function AlgorithmVisualizer() {
   const info = ALGO_INFO[algo]
 
   const buildSteps = useCallback((algoId: AlgoId, size: number) => {
-    const arr = randArray(size)
+    const effectiveSize = QUADRATIC_ALGOS.has(algoId) ? Math.min(size, MAX_QUAD_SIZE) : size
+    const arr = randArray(effectiveSize)
     stepsRef.current = GENERATORS[algoId](arr)
     currentStepRef.current = 0
     setViz({ ...initialVizState, totalSteps: stepsRef.current.length })
@@ -471,7 +477,7 @@ export default function AlgorithmVisualizer() {
           <div
             className="h-full rounded-full transition-all"
             style={{
-              width: `${((viz.stepIdx + 1) / viz.totalSteps) * 100}%`,
+              width: `${Math.min(100, ((viz.stepIdx + 1) / viz.totalSteps) * 100)}%`,
               background: `linear-gradient(90deg, ${info.color}, ${info.color}aa)`,
               boxShadow: `0 0 8px ${info.color}88`,
             }}
@@ -500,14 +506,17 @@ export default function AlgorithmVisualizer() {
         {/* Array size */}
         <div className="nexus-card rounded-lg p-3">
           <p className="mb-2 text-[10px] uppercase tracking-wider text-[#4a5278]">
-            Array Size — {arraySize}
+            Array Size —{' '}
+            {QUADRATIC_ALGOS.has(algo) && arraySize > MAX_QUAD_SIZE
+              ? <>{MAX_QUAD_SIZE} <span className="text-[#ffcc00]">(capped)</span></>
+              : arraySize}
           </p>
           <input
             type="range"
             min={20}
             max={120}
             value={arraySize}
-            aria-label={`Array size: ${arraySize} elements`}
+            aria-label={`Array size: ${QUADRATIC_ALGOS.has(algo) ? Math.min(arraySize, MAX_QUAD_SIZE) : arraySize} elements`}
             disabled={running}
             onChange={e => setArraySize(Number(e.target.value))}
             className="w-full accent-[#00ff87] disabled:opacity-40"
