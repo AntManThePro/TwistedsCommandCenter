@@ -183,4 +183,32 @@ describe('useInventory', () => {
     expect(result.current.activities[0].action).toBe('added')
     expect(result.current.activities[0].itemName).toBe('Activity Test')
   })
+
+  it('adds activity when updating an item', () => {
+    const { result } = renderHook(() => useInventory())
+    const targetId = result.current.items[0].id
+    const targetName = result.current.items[0].name
+    const initialActivities = result.current.activities.length
+
+    act(() => {
+      result.current.updateItem(targetId, { quantity: 50 })
+    })
+
+    expect(result.current.activities.length).toBe(initialActivities + 1)
+    expect(result.current.activities[0].action).toBe('updated')
+    expect(result.current.activities[0].itemName).toBe(targetName)
+  })
+
+  it('uses the updated name in activity when item name changes', () => {
+    const { result } = renderHook(() => useInventory())
+    const targetId = result.current.items[0].id
+    const renamed = 'Renamed Inventory Item'
+
+    act(() => {
+      result.current.updateItem(targetId, { name: renamed })
+    })
+
+    expect(result.current.activities[0].action).toBe('updated')
+    expect(result.current.activities[0].itemName).toBe(renamed)
+  })
 })
