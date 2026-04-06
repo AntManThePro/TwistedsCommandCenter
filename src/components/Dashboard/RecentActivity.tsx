@@ -27,13 +27,12 @@ export default function RecentActivity({ activities }: RecentActivityProps) {
         </div>
       </div>
       <div className="space-y-1.5">
-        {activities.slice(0, 6).map((entry, i) => {
+        {activities.slice(0, 6).map((entry) => {
           const cfg = actionConfig[entry.action]
           return (
             <div
               key={entry.id}
               className="flex items-center gap-3 rounded-lg border border-transparent px-2.5 py-2 transition-all duration-200 hover:border-[#1a1a3e] hover:bg-[#0d0d1e]/60"
-              style={{ animationDelay: `${i * 50}ms` }}
             >
               {/* Action badge */}
               <span

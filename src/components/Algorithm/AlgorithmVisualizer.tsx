@@ -147,7 +147,8 @@ export default function AlgorithmVisualizer() {
   const info = ALGO_INFO[algo]
 
   const buildSteps = useCallback((algoId: AlgoId, size: number) => {
-    const arr = randArray(size)
+    const effectiveSize = QUADRATIC_ALGOS.has(algoId) ? Math.min(size, MAX_QUAD_SIZE) : size
+    const arr = randArray(effectiveSize)
     stepsRef.current = GENERATORS[algoId](arr)
     currentStepRef.current = 0
     setViz({ ...initialVizState, totalSteps: stepsRef.current.length })
@@ -173,8 +174,9 @@ export default function AlgorithmVisualizer() {
       const idx = currentStepRef.current
       const steps = stepsRef.current
       if (idx >= steps.length) {
+        const finalStepIdx = Math.max(steps.length - 1, 0)
         setRunning(false)
-        setViz(prev => ({ ...prev, done: true }))
+        setViz(prev => ({ ...prev, stepIdx: finalStepIdx, done: true }))
         return
       }
 
@@ -213,10 +215,11 @@ export default function AlgorithmVisualizer() {
       }, 50)
     } else {
       setRunning(true)
-      startTimeRef.current = Date.now()
+      // Preserve accumulated elapsed time so the timer continues from where it paused
+      startTimeRef.current = Date.now() - viz.elapsed * 1000
       rafRef.current = setTimeout(animate, 10)
     }
-  }, [algo, animate, arraySize, buildSteps, viz.done])
+  }, [algo, animate, arraySize, buildSteps, viz.done, viz.elapsed])
 
   useEffect(() => {
     return () => { if (rafRef.current !== null) clearTimeout(rafRef.current) }
@@ -346,6 +349,7 @@ export default function AlgorithmVisualizer() {
             min={1}
             max={99}
             value={speed}
+            aria-label={`Animation speed: ${speed}x`}
             onChange={e => setSpeed(Number(e.target.value))}
             aria-label="Animation speed"
             className="w-full accent-[#60efff]"
@@ -355,13 +359,17 @@ export default function AlgorithmVisualizer() {
         {/* Array size */}
         <div className="nexus-card rounded-lg p-3">
           <p className="mb-2 text-[10px] uppercase tracking-wider text-[#4a5278]">
-            Array Size — {arraySize}
+            Array Size —{' '}
+            {QUADRATIC_ALGOS.has(algo) && arraySize > MAX_QUAD_SIZE
+              ? <>{MAX_QUAD_SIZE} <span className="text-[#ffcc00]">(capped)</span></>
+              : arraySize}
           </p>
           <input
             type="range"
             min={20}
             max={120}
             value={arraySize}
+            aria-label={`Array size: ${QUADRATIC_ALGOS.has(algo) ? Math.min(arraySize, MAX_QUAD_SIZE) : arraySize} elements`}
             disabled={running}
             onChange={e => setArraySize(Number(e.target.value))}
             aria-label="Array size"
@@ -388,6 +396,7 @@ export default function AlgorithmVisualizer() {
           )}
           <button
             onClick={reset}
+            aria-label="Reset visualization"
             className="nexus-btn rounded-lg border border-[#60efff]/20 px-3 py-2 text-sm font-bold uppercase tracking-wider text-[#4a5278] transition-all hover:border-[#60efff]/40 hover:text-[#60efff]"
           >
             ⟳

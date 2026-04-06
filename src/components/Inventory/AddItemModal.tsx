@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { FormEvent } from 'react'
 import type { InventoryItem, ItemCategory } from '../../types/inventory'
 import { allCategories } from '../../data/mockData'
 
@@ -23,10 +24,17 @@ export default function AddItemModal({ isOpen, onClose, onAdd }: AddItemModalPro
 
   if (!isOpen) return null
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     if (!form.name.trim() || !form.sku.trim()) return
-    onAdd(form)
+
+    const normalizedForm: NewItemData = {
+      ...form,
+      quantity: Number.isFinite(form.quantity) ? form.quantity : 0,
+      price: Number.isFinite(form.price) ? form.price : 0,
+    }
+
+    onAdd(normalizedForm)
     setForm(initialForm)
     onClose()
   }
@@ -140,8 +148,13 @@ export default function AddItemModal({ isOpen, onClose, onAdd }: AddItemModalPro
                 type="number"
                 min={0}
                 step={0.01}
-                value={form.price}
-                onChange={e => updateField('price', parseFloat(e.target.value) || 0)}
+                value={Number.isNaN(form.price) ? '' : form.price}
+                onChange={e =>
+                  updateField(
+                    'price',
+                    e.currentTarget.value === '' ? Number.NaN : e.currentTarget.valueAsNumber
+                  )
+                }
                 className="w-full rounded-lg border border-[#1e1e2e] bg-[#0a0a0f] px-3 py-2 text-sm text-slate-200 outline-none transition-colors focus:border-cyan-500/50"
               />
             </div>
