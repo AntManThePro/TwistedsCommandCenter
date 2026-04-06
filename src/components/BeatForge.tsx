@@ -326,7 +326,9 @@ const BeatForge = memo(function BeatForge() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px', paddingRight: '4px' }}>
                   <button
                     onClick={() => toggleMute(track.id)}
-                    title="Mute"
+                    title={`${muteState[track.id] ? 'Unmute' : 'Mute'} ${track.id}`}
+                    aria-label={`${muteState[track.id] ? 'Unmute' : 'Mute'} ${track.id}`}
+                    aria-pressed={muteState[track.id]}
                     style={{
                       width: '18px', height: '18px',
                       border: `1px solid ${muteState[track.id] ? 'rgba(255,0,0,0.5)' : track.color + '66'}`,
