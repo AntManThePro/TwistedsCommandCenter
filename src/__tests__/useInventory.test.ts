@@ -95,6 +95,24 @@ describe('useInventory', () => {
     expect(updated?.status).toBe('In Stock')
   })
 
+  it('re-derives status from existing quantity on non-quantity updates', () => {
+    const { result } = renderHook(() => useInventory())
+    const targetId = result.current.items[0].id
+
+    act(() => {
+      result.current.updateItem(targetId, { quantity: 0 })
+    })
+
+    act(() => {
+      result.current.updateItem(targetId, { name: 'Renamed Item' })
+    })
+
+    const updated = result.current.items.find(i => i.id === targetId)
+    expect(updated?.name).toBe('Renamed Item')
+    expect(updated?.quantity).toBe(0)
+    expect(updated?.status).toBe('Out of Stock')
+  })
+
   it('adds activity when adding an item', () => {
     const { result } = renderHook(() => useInventory())
     const initialActivities = result.current.activities.length

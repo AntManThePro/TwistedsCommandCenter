@@ -50,7 +50,7 @@ export function useInventory() {
     if (!item) return
 
     const nextQuantity = updates.quantity ?? item.quantity
-    const nextStatus = updates.quantity !== undefined ? deriveStatus(updates.quantity) : item.status
+    const nextStatus = deriveStatus(nextQuantity)
     const updated: InventoryItem = {
       ...item,
       ...updates,
