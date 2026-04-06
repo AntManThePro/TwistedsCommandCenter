@@ -134,13 +134,13 @@ function renderFractal(
 ): void {
   const { width, height } = imgData;
   const data = imgData.data;
-  const half_w = width / 2;
-  const half_h = height / 2;
+  const halfW = width / 2;
+  const halfH = height / 2;
 
   for (let py = 0; py < height; py++) {
     for (let px = 0; px < width; px++) {
-      const re = (px - half_w) / vp.zoom + vp.cx;
-      const im = (py - half_h) / vp.zoom + vp.cy;
+      const re = (px - halfW) / vp.zoom + vp.cx;
+      const im = (py - halfH) / vp.zoom + vp.cy;
 
       let t: number;
       if (fractal === 'mandelbrot') {
