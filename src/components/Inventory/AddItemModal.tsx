@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { FormEvent } from 'react'
 import type { InventoryItem, ItemCategory } from '../../types/inventory'
 import { allCategories } from '../../data/mockData'
 
@@ -23,7 +24,7 @@ export default function AddItemModal({ isOpen, onClose, onAdd }: AddItemModalPro
 
   if (!isOpen) return null
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
     if (!form.name.trim() || !form.sku.trim()) return
     onAdd(form)
