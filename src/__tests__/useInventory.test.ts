@@ -121,32 +121,6 @@ describe('useInventory', () => {
     expect(result.current.activities[0].details).toContain('0')
     expect(result.current.activities[0].details).toContain('10')
   })
-  it('logs a restocked activity when updating from out of stock to in stock', () => {
-    const { result } = renderHook(() => useInventory())
-    const targetItem = result.current.items[0]
-    const targetId = targetItem.id
-    const initialActivities = result.current.activities.length
-
-    act(() => {
-      result.current.updateItem(targetId, { quantity: 0 })
-    })
-
-    expect(result.current.items.find(i => i.id === targetId)?.status).toBe('Out of Stock')
-
-    act(() => {
-      result.current.updateItem(targetId, { quantity: 10 })
-    })
-
-    const updated = result.current.items.find(i => i.id === targetId)
-    expect(updated?.quantity).toBe(10)
-    expect(updated?.status).toBe('In Stock')
-    expect(result.current.activities.length).toBe(initialActivities + 2)
-    expect(result.current.activities[0].action).toBe('restocked')
-    expect(result.current.activities[0].itemName).toBe(targetItem.name)
-    expect(result.current.activities[0].details).toContain('quantity')
-    expect(result.current.activities[0].details).toContain('0')
-    expect(result.current.activities[0].details).toContain('10')
-  })
   it('re-derives status from existing quantity on non-quantity updates', () => {
     const { result } = renderHook(() => useInventory())
     const targetId = result.current.items[0].id

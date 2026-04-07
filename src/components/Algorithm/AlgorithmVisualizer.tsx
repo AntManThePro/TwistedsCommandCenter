@@ -15,6 +15,11 @@ import {
 
 type AlgoId = 'bubble' | 'selection' | 'insertion' | 'quick' | 'merge'
 
+/** Quadratic O(n²) algorithms are capped to this array size to avoid allocating
+ *  thousands of full-array copies and causing UI jank at large sizes. */
+const MAX_QUAD_SIZE = 80
+const QUADRATIC_ALGOS = new Set<AlgoId>(['bubble', 'selection', 'insertion'])
+
 interface AlgoInfo {
   name: string
   color: string
@@ -351,7 +356,6 @@ export default function AlgorithmVisualizer() {
             value={speed}
             aria-label={`Animation speed: ${speed}x`}
             onChange={e => setSpeed(Number(e.target.value))}
-            aria-label="Animation speed"
             className="w-full accent-[#60efff]"
           />
         </div>
@@ -372,7 +376,6 @@ export default function AlgorithmVisualizer() {
             aria-label={`Array size: ${QUADRATIC_ALGOS.has(algo) ? Math.min(arraySize, MAX_QUAD_SIZE) : arraySize} elements`}
             disabled={running}
             onChange={e => setArraySize(Number(e.target.value))}
-            aria-label="Array size"
             className="w-full accent-[#00ff87] disabled:opacity-40"
           />
         </div>
