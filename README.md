@@ -39,5 +39,8 @@ src/
     Layout/       # Sidebar, Header, Layout wrapper
     Dashboard/    # Stats cards, recent activity
     Inventory/    # Inventory table, add item modal, status badges
+    Algorithm/    # Algorithm Lab UI and related components
+    Portfolio/    # Portfolio views and supporting components
+    shared/       # Reusable shared UI components
   __tests__/      # Unit tests
 ```
