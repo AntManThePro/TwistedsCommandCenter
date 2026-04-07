@@ -3,18 +3,22 @@ import type { InventoryItem, ItemCategory, ItemStatus } from '../../types/invent
 import { allCategories } from '../../data/mockData'
 import InventoryTable from './InventoryTable'
 import AddItemModal from './AddItemModal'
+import EditItemModal from './EditItemModal'
 
 interface InventoryPageProps {
   items: InventoryItem[]
   onAdd: (item: Omit<InventoryItem, 'id' | 'status' | 'lastUpdated'>) => void
   onDelete: (id: string) => void
+  onUpdate: (id: string, updates: Partial<Omit<InventoryItem, 'id' | 'status' | 'lastUpdated'>>) => void
 }
 
-export default function InventoryPage({ items, onAdd, onDelete }: InventoryPageProps) {
+export default function InventoryPage({ items, onAdd, onDelete, onUpdate }: InventoryPageProps) {
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<ItemCategory | ''>('')
   const [statusFilter, setStatusFilter] = useState<ItemStatus | ''>('')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [editingItem, setEditingItem] = useState<InventoryItem | null>(null)
 
   const filtered = useMemo(() => {
     return items.filter(item => {
@@ -110,10 +114,30 @@ export default function InventoryPage({ items, onAdd, onDelete }: InventoryPageP
       </p>
 
       {/* Table */}
-      <InventoryTable items={filtered} onDelete={onDelete} />
+      <InventoryTable
+        items={filtered}
+        onDelete={onDelete}
+        onEdit={item => {
+          setEditingItem(item)
+          setIsEditModalOpen(true)
+        }}
+      />
 
-      {/* Modal */}
+      {/* Add Modal */}
       <AddItemModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAdd={onAdd} />
+
+      {/* Edit Modal */}
+      <EditItemModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false)
+          setEditingItem(null)
+        }}
+        onUpdate={updates => {
+          if (editingItem) onUpdate(editingItem.id, updates)
+        }}
+        item={editingItem}
+      />
     </div>
   )
 }

@@ -11,7 +11,7 @@ import SettingsPage from './components/Settings/SettingsPage'
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageId>('dashboard')
-  const { items, activities, stats, addItem, deleteItem } = useInventory()
+  const { items, activities, stats, addItem, deleteItem, updateItem } = useInventory()
 
   const renderPage = () => {
     switch (currentPage) {
@@ -29,6 +29,7 @@ export default function App() {
             items={items}
             onAdd={addItem}
             onDelete={deleteItem}
+            onUpdate={updateItem}
           />
         )
       case 'algorithm':
