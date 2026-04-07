@@ -55,30 +55,42 @@ export default function InventoryPage({ items, onAdd, onDelete }: InventoryPageP
           </div>
 
           {/* Category filter */}
-          <select
-            value={categoryFilter}
-            onChange={e => setCategoryFilter(e.target.value as ItemCategory | '')}
-            className="rounded-lg border border-[#1e1e2e] bg-[#12121a] px-3 py-2 text-sm text-slate-300 outline-none transition-colors focus:border-cyan-500/50"
-          >
-            <option value="">All Categories</option>
-            {allCategories.map(cat => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="category-filter" className="text-xs font-medium text-slate-400">
+              Category
+            </label>
+            <select
+              id="category-filter"
+              value={categoryFilter}
+              onChange={e => setCategoryFilter(e.target.value as ItemCategory | '')}
+              className="rounded-lg border border-[#1e1e2e] bg-[#12121a] px-3 py-2 text-sm text-slate-300 outline-none transition-colors focus:border-cyan-500/50"
+            >
+              <option value="">All Categories</option>
+              {allCategories.map(cat => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
 
           {/* Status filter */}
-          <select
-            value={statusFilter}
-            onChange={e => setStatusFilter(e.target.value as ItemStatus | '')}
-            className="rounded-lg border border-[#1e1e2e] bg-[#12121a] px-3 py-2 text-sm text-slate-300 outline-none transition-colors focus:border-cyan-500/50"
-          >
-            <option value="">All Status</option>
-            <option value="In Stock">In Stock</option>
-            <option value="Low Stock">Low Stock</option>
-            <option value="Out of Stock">Out of Stock</option>
-          </select>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="status-filter" className="text-xs font-medium text-slate-400">
+              Status
+            </label>
+            <select
+              id="status-filter"
+              value={statusFilter}
+              onChange={e => setStatusFilter(e.target.value as ItemStatus | '')}
+              className="rounded-lg border border-[#1e1e2e] bg-[#12121a] px-3 py-2 text-sm text-slate-300 outline-none transition-colors focus:border-cyan-500/50"
+            >
+              <option value="">All Status</option>
+              <option value="In Stock">In Stock</option>
+              <option value="Low Stock">Low Stock</option>
+              <option value="Out of Stock">Out of Stock</option>
+            </select>
+          </div>
         </div>
 
         <button
