@@ -6,6 +6,7 @@ import DashboardPage from './components/Dashboard/DashboardPage'
 import InventoryPage from './components/Inventory/InventoryPage'
 import AlgorithmVisualizer from './components/Algorithm/AlgorithmVisualizer'
 import PortfolioPage from './components/Portfolio/PortfolioPage'
+import CategoriesPage from './components/Categories/CategoriesPage'
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageId>('dashboard')
@@ -34,20 +35,7 @@ export default function App() {
       case 'portfolio':
         return <PortfolioPage />
       case 'categories':
-        return (
-          <div className="animate-fade-in nexus-card rounded-xl p-8 text-center">
-            <div
-              className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl"
-              style={{ background: 'rgba(255,204,0,0.1)', border: '1px solid rgba(255,204,0,0.2)' }}
-            >
-              <svg className="h-7 w-7" style={{ color: '#ffcc00' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-              </svg>
-            </div>
-            <h2 className="text-lg font-black uppercase tracking-wider text-white">Categories</h2>
-            <p className="mt-2 text-xs text-[#4a5278]">Category management coming soon.</p>
-          </div>
-        )
+        return <CategoriesPage items={items} onNavigate={setCurrentPage} />
       case 'settings':
         return (
           <div className="animate-fade-in nexus-card rounded-xl p-8 text-center">
