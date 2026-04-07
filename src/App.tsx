@@ -5,6 +5,7 @@ import Layout from './components/Layout/Layout'
 import DashboardPage from './components/Dashboard/DashboardPage'
 import InventoryPage from './components/Inventory/InventoryPage'
 import AlgorithmVisualizer from './components/Algorithm/AlgorithmVisualizer'
+import PortfolioPage from './components/Portfolio/PortfolioPage'
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<PageId>('dashboard')
@@ -30,6 +31,8 @@ export default function App() {
         )
       case 'algorithm':
         return <AlgorithmVisualizer />
+      case 'portfolio':
+        return <PortfolioPage />
       case 'categories':
         return (
           <div className="animate-fade-in nexus-card rounded-xl p-8 text-center">

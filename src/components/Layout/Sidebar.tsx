@@ -40,6 +40,16 @@ const navItems: { id: PageId; label: string; accent: string; icon: ReactNode }[]
     ),
   },
   {
+    id: 'portfolio',
+    label: 'Portfolio',
+    accent: '#8b5cf6',
+    icon: (
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
+      </svg>
+    ),
+  },
+  {
     id: 'categories',
     label: 'Categories',
     accent: '#ffcc00',
@@ -131,8 +141,8 @@ export default function Sidebar({ currentPage, onNavigate, isOpen, onClose }: Si
               >
                 <span style={{ color: active ? item.accent : '#4a5278' }}>{item.icon}</span>
                 {item.label}
-                {item.id === 'algorithm' && (
-                  <span className="ml-auto rounded-sm bg-[#ff0080]/20 px-1 py-0.5 text-[8px] font-bold text-[#ff0080]">
+                {item.id === 'portfolio' && (
+                  <span className="ml-auto rounded-sm bg-[#8b5cf6]/20 px-1 py-0.5 text-[8px] font-bold text-[#8b5cf6]">
                     NEW
                   </span>
                 )}

@@ -29,7 +29,7 @@ export interface ActivityEntry {
   timestamp: string
 }
 
-export type PageId = 'dashboard' | 'inventory' | 'categories' | 'algorithm' | 'settings'
+export type PageId = 'dashboard' | 'inventory' | 'categories' | 'algorithm' | 'settings' | 'portfolio'
 
 export interface StatsData {
   totalItems: number
