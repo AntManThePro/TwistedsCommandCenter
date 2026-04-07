@@ -8,6 +8,11 @@ function deriveStatus(quantity: number): ItemStatus {
   return 'In Stock'
 }
 
+function localDateString(): string {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
 export function useInventory() {
   const [items, setItems] = useState<InventoryItem[]>(mockInventoryItems)
   const [activities, setActivities] = useState<ActivityEntry[]>(mockActivityEntries)
@@ -21,7 +26,7 @@ export function useInventory() {
       ...item,
       id: crypto.randomUUID(),
       status: deriveStatus(item.quantity),
-      lastUpdated: new Date().toISOString().split('T')[0],
+      lastUpdated: localDateString(),
     }
 
     setItems(prev => [newItem, ...prev])
@@ -56,14 +61,13 @@ export function useInventory() {
       ...existingItem,
       ...updates,
       status: nextStatus,
-      lastUpdated: new Date().toISOString().split('T')[0],
+      lastUpdated: localDateString(),
     }
 
     const isRestock =
       updates.quantity !== undefined &&
       (existingItem.status === 'Out of Stock' || existingItem.status === 'Low Stock') &&
       nextStatus === 'In Stock'
-
     const action: ActivityEntry['action'] = isRestock ? 'restocked' : 'updated'
     const details = isRestock
       ? `Restocked quantity ${existingItem.quantity} → ${nextQuantity} units`

@@ -300,10 +300,11 @@ export default function PortfolioPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 rounded-xl border border-[#1a1a3e] bg-[#0a0a1f] p-1">
+      <div role="tablist" className="flex gap-1 rounded-xl border border-[#1a1a3e] bg-[#0a0a1f] p-1">
         {TABS.map(tab => (
           <button
             key={tab.id}
+            id={`tab-${tab.id}`}
             onClick={() => handleTabClick(tab.id)}
             className="flex-1 rounded-lg py-2 text-[11px] font-bold uppercase tracking-widest transition-all duration-200"
             style={
@@ -317,6 +318,7 @@ export default function PortfolioPage() {
                 : { color: '#4a5278', borderBottom: '2px solid transparent' }
             }
             aria-selected={activeTab === tab.id}
+            aria-controls="portfolio-tabpanel"
             role="tab"
           >
             {tab.label}
@@ -325,7 +327,7 @@ export default function PortfolioPage() {
       </div>
 
       {/* Tab panels */}
-      <div role="tabpanel">
+      <div id="portfolio-tabpanel" role="tabpanel" aria-labelledby={`tab-${activeTab}`}>
         {/* Projects tab */}
         {activeTab === 'projects' && (
           <div className="animate-fade-in grid grid-cols-1 gap-3 lg:grid-cols-2">
