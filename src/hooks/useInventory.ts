@@ -13,6 +13,12 @@ function localDateString(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
+function localTimestampString(): string {
+  const d = new Date()
+  const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+  return `${localDateString()} ${time}`
+}
+
 export function useInventory() {
   const [items, setItems] = useState<InventoryItem[]>(mockInventoryItems)
   const [activities, setActivities] = useState<ActivityEntry[]>(mockActivityEntries)
@@ -36,13 +42,7 @@ export function useInventory() {
       action: 'added',
       itemName: item.name,
       details: `Added ${item.quantity} units to inventory`,
-      timestamp: new Date().toLocaleString('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
+      timestamp: localTimestampString(),
     }
     setActivities(prev => [activity, ...prev])
 
@@ -80,13 +80,7 @@ export function useInventory() {
       action,
       itemName: updated.name,
       details,
-      timestamp: new Date().toLocaleString('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
+      timestamp: localTimestampString(),
     }
 
     setItems(prev => prev.map(item => (item.id === id ? updated : item)))
@@ -102,13 +96,7 @@ export function useInventory() {
         action: 'removed',
         itemName: item.name,
         details: `Removed from inventory`,
-        timestamp: new Date().toLocaleString('en-US', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
+        timestamp: localTimestampString(),
       }
       setActivities(prevAct => [activity, ...prevAct])
     }
