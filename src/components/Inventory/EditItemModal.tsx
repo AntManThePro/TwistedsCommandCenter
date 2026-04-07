@@ -9,29 +9,17 @@ interface EditItemModalProps {
   isOpen: boolean
   onClose: () => void
   onUpdate: (updates: UpdateItemData) => void
-  item: InventoryItem | null
+  item: InventoryItem
 }
 
 export default function EditItemModal({ isOpen, onClose, onUpdate, item }: EditItemModalProps) {
-  const [form, setForm] = useState<Omit<InventoryItem, 'id' | 'status' | 'lastUpdated'>>({
-    name: '',
-    sku: '',
-    category: 'Electronics',
-    quantity: 0,
-    price: 0,
-  })
-
-  useEffect(() => {
-    if (item) {
-      setForm({
-        name: item.name,
-        sku: item.sku,
-        category: item.category,
-        quantity: item.quantity,
-        price: item.price,
-      })
-    }
-  }, [item])
+  const [form, setForm] = useState<Omit<InventoryItem, 'id' | 'status' | 'lastUpdated'>>(() => ({
+    name: item.name,
+    sku: item.sku,
+    category: item.category,
+    quantity: item.quantity,
+    price: item.price,
+  }))
 
   useEffect(() => {
     if (!isOpen) return
@@ -42,7 +30,7 @@ export default function EditItemModal({ isOpen, onClose, onUpdate, item }: EditI
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [isOpen, onClose])
 
-  if (!item || !isOpen) return null
+  if (!isOpen) return null
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()

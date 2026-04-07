@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useState, useEffect, useRef, type ReactNode } from 'react'
 
 /* ══════════════════════════════════════════════════════
    NEXUS Settings — Twisted's Command Center
@@ -68,6 +68,13 @@ export default function SettingsPage() {
   const [systemMetrics, setSystemMetrics] = useState(false)
 
   const [resetMessage, setResetMessage] = useState<string | null>(null)
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current)
+    }
+  }, [])
 
   function handleReset() {
     setAccentColor('#60efff')
@@ -77,7 +84,8 @@ export default function SettingsPage() {
     setActivityFeed(true)
     setSystemMetrics(false)
     setResetMessage('Settings reset to defaults.')
-    setTimeout(() => setResetMessage(null), 3000)
+    if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current)
+    resetTimerRef.current = setTimeout(() => setResetMessage(null), 3000)
   }
 
   return (

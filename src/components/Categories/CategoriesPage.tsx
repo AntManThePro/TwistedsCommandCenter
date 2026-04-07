@@ -222,7 +222,7 @@ export default function CategoriesPage({ items, onNavigate }: CategoriesPageProp
             { label: 'Total SKUs', value: totalItems, color: '#8b5cf6' },
             {
               label: 'Total Value',
-              value: `$${items.reduce((s, i) => s + i.price * i.quantity, 0).toLocaleString(undefined, { maximumFractionDigits: 0 })}`,
+              value: `$${items.reduce((sum, item) => sum + item.price * item.quantity, 0).toLocaleString(undefined, { maximumFractionDigits: 0 })}`,
               color: '#ffcc00',
             },
           ].map(stat => (

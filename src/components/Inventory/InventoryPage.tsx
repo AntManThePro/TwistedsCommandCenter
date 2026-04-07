@@ -127,17 +127,18 @@ export default function InventoryPage({ items, onAdd, onDelete, onUpdate }: Inve
       <AddItemModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onAdd={onAdd} />
 
       {/* Edit Modal */}
-      <EditItemModal
-        isOpen={isEditModalOpen}
-        onClose={() => {
-          setIsEditModalOpen(false)
-          setEditingItem(null)
-        }}
-        onUpdate={updates => {
-          if (editingItem) onUpdate(editingItem.id, updates)
-        }}
-        item={editingItem}
-      />
+      {editingItem && (
+        <EditItemModal
+          key={editingItem.id}
+          isOpen={isEditModalOpen}
+          onClose={() => {
+            setIsEditModalOpen(false)
+            setEditingItem(null)
+          }}
+          onUpdate={updates => onUpdate(editingItem.id, updates)}
+          item={editingItem}
+        />
+      )}
     </div>
   )
 }
