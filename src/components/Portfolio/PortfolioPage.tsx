@@ -137,7 +137,14 @@ function ProjectCard({ project }: { project: Project }) {
       role="button"
       aria-expanded={expanded}
       tabIndex={0}
-      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setExpanded(prev => !prev) }}
+      onKeyDown={e => {
+        if (e.key === 'Enter') {
+          setExpanded(prev => !prev)
+        } else if (e.key === ' ' || e.key === 'Spacebar') {
+          e.preventDefault()
+          setExpanded(prev => !prev)
+        }
+      }}
     >
       {/* Card header */}
       <div className="flex items-start justify-between gap-3">
