@@ -42,8 +42,7 @@ export default function EditItemModal({ isOpen, onClose, onUpdate, item }: EditI
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [isOpen, onClose])
 
-  if (!item) return null
-  if (!isOpen) return null
+  if (!item || !isOpen) return null
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
