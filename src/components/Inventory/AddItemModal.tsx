@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import type { InventoryItem, ItemCategory } from '../../types/inventory'
 import { allCategories } from '../../data/mockData'
@@ -22,6 +22,15 @@ const initialForm: NewItemData = {
 export default function AddItemModal({ isOpen, onClose, onAdd }: AddItemModalProps) {
   const [form, setForm] = useState<NewItemData>(initialForm)
 
+  useEffect(() => {
+    if (!isOpen) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, onClose])
+
   if (!isOpen) return null
 
   const handleSubmit = (e: FormEvent) => {
@@ -44,10 +53,7 @@ export default function AddItemModal({ isOpen, onClose, onAdd }: AddItemModalPro
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      onKeyDown={e => { if (e.key === 'Escape') onClose() }}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
