@@ -70,9 +70,9 @@ const ArtDecoShowcase = memo(function ArtDecoShowcase() {
   const lastMouseRef = useRef({ x: 0, y: 0 });
   const autoRotateRef = useRef(false);
   const animIdRef = useRef<number>(0);
+  const isLoopRunningRef = useRef(false);
   const currentLayerRef = useRef(1);
   const sparklesRef = useRef<Sparkle[]>([]);
-  const needsRedrawRef = useRef(true);
 
   const [autoRotate, setAutoRotate] = useState(false);
   const [activeLayer, setActiveLayer] = useState(1);
@@ -166,73 +166,53 @@ const ArtDecoShowcase = memo(function ArtDecoShowcase() {
     });
   }, [project3D]);
 
-  // Animation loop — only keeps itself alive while auto-rotate is enabled.
-  // When auto-rotate is off the loop stops; a single redraw is requested via
-  // needsRedrawRef whenever the user interacts with the canvas.
+  // Animation loop — always runs so sparkles animate continuously.
+  // Rotation is only applied when auto-rotate is enabled; the loop itself
+  // keeps going regardless of the toggle.
   const startLoop = useCallback(() => {
-    if (animIdRef.current !== 0 || !autoRotateRef.current) return; // guard: only start when enabled
+    if (isLoopRunningRef.current) return; // guard: only one loop at a time
+    isLoopRunningRef.current = true;
     const loop = () => {
+      if (!isLoopRunningRef.current) return; // cancelled on unmount
       if (autoRotateRef.current) {
         rotationRef.current.y += 0.01;
-        drawFrame();
-        animIdRef.current = requestAnimationFrame(loop);
-      } else {
-        // Loop has stopped; clear the id so startLoop can be called again later.
-        animIdRef.current = 0;
       }
+      drawFrame();
+      animIdRef.current = requestAnimationFrame(loop);
     };
     animIdRef.current = requestAnimationFrame(loop);
   }, [drawFrame]);
 
-  // Request a single redraw when auto-rotate is off (user interaction or
-  // initial mount).
-  const requestRedraw = useCallback(() => {
-    if (autoRotateRef.current) return; // loop handles it
-    if (!needsRedrawRef.current) return; // already scheduled
-    needsRedrawRef.current = false;
-    requestAnimationFrame(() => {
-      drawFrame();
-      needsRedrawRef.current = true;
-    });
-  }, [drawFrame]);
-
-  // Initial setup
+  // Initial setup — start the always-running sparkle animation loop.
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     initSparkles(canvas.width, canvas.height);
-    drawFrame(); // draw once on mount
+    startLoop();
     return () => {
+      isLoopRunningRef.current = false;
       cancelAnimationFrame(animIdRef.current);
       animIdRef.current = 0;
     };
-  }, [initSparkles, drawFrame]);
+  }, [initSparkles, startLoop]);
 
   const handleAutoRotate = useCallback(() => {
     const next = !autoRotateRef.current;
     autoRotateRef.current = next;
     setAutoRotate(next);
-    if (next) {
-      startLoop();
-    } else {
-      // The loop will self-cancel on the next tick; request a static redraw.
-      requestRedraw();
-    }
-  }, [startLoop, requestRedraw]);
+  }, []);
 
   const handleReset = useCallback(() => {
     rotationRef.current = { x: 0.5, y: 0.5 };
     scaleRef.current = 1;
-    requestRedraw();
-  }, [requestRedraw]);
+  }, []);
 
   const handleLayerChange = useCallback(
     (layer: number) => {
       currentLayerRef.current = layer;
       setActiveLayer(layer);
-      requestRedraw();
     },
-    [requestRedraw]
+    []
   );
 
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -248,9 +228,8 @@ const ArtDecoShowcase = memo(function ArtDecoShowcase() {
       rotationRef.current.y += dx * 0.01;
       rotationRef.current.x += dy * 0.01;
       lastMouseRef.current = { x: e.clientX, y: e.clientY };
-      requestRedraw();
     },
-    [requestRedraw]
+    []
   );
 
   const handleMouseUp = useCallback(() => {
@@ -261,9 +240,8 @@ const ArtDecoShowcase = memo(function ArtDecoShowcase() {
     (e: React.WheelEvent<HTMLCanvasElement>) => {
       e.preventDefault();
       scaleRef.current = Math.max(0.5, Math.min(2, scaleRef.current + e.deltaY * -0.001));
-      requestRedraw();
     },
-    [requestRedraw]
+    []
   );
 
   const layerInfo = LAYER_INFO[activeLayer - 1];
