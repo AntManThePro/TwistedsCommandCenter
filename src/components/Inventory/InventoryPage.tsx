@@ -54,7 +54,6 @@ export default function InventoryPage({ items, onAdd, onDelete, onUpdate }: Inve
               onChange={e => setSearch(e.target.value)}
               placeholder="Search items..."
               aria-label="Search inventory items"
-              aria-label="Search inventory items"
               className="w-full rounded-lg border border-[#1e1e2e] bg-[#12121a] py-2 pl-9 pr-3 text-sm text-slate-200 placeholder-slate-600 outline-none transition-colors focus:border-cyan-500/50"
             />
           </div>
