@@ -2,6 +2,16 @@ import type { StatsData, ActivityEntry } from '../../types/inventory'
 import StatsCard from './StatsCard'
 import RecentActivity from './RecentActivity'
 
+/** Max total categories defined in the data layer. */
+const TOTAL_CATEGORIES = 8
+
+/**
+ * Inventory value target used to normalise the Value Fill metric.
+ * When total inventory value reaches this amount, the bar is 100 %.
+ * Adjust as the catalogue grows.
+ */
+const VALUE_FILL_TARGET = 50_000
+
 interface DashboardPageProps {
   stats: StatsData
   activities: ActivityEntry[]
@@ -9,6 +19,17 @@ interface DashboardPageProps {
 }
 
 export default function DashboardPage({ stats, activities, onNavigate }: DashboardPageProps) {
+  /** Percentage of distinct items that are fully In Stock (0 when no items exist). */
+  const stockHealthPct = stats.itemCount > 0
+    ? Math.round(((stats.itemCount - stats.lowStockAlerts) / stats.itemCount) * 100)
+    : 0
+
+  /** Percentage of defined categories that have at least one item. */
+  const categorySpanPct = Math.round((stats.categories / TOTAL_CATEGORIES) * 100)
+
+  /** Inventory value fill: capped at 100 %, normalised against VALUE_FILL_TARGET. */
+  const valueFillPct = Math.min(100, Math.round((stats.totalValue / VALUE_FILL_TARGET) * 100))
+
   return (
     <div className="animate-fade-in space-y-5">
       {/* Page header */}
@@ -145,9 +166,9 @@ export default function DashboardPage({ stats, activities, onNavigate }: Dashboa
               System Metrics
             </h3>
             {[
-              { label: 'Database', value: 92, color: '#00ff87' },
-              { label: 'API Sync',  value: 78, color: '#60efff' },
-              { label: 'Storage',   value: 55, color: '#ffcc00' },
+              { label: 'Stock Health', value: stockHealthPct, color: '#00ff87' },
+              { label: 'Category Span', value: categorySpanPct, color: '#60efff' },
+              { label: 'Value Fill',   value: valueFillPct,    color: '#ffcc00' },
             ].map(m => (
               <div key={m.label} className="mb-2">
                 <div className="mb-1 flex justify-between text-[9px] uppercase tracking-wider">
