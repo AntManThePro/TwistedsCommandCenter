@@ -49,6 +49,7 @@ describe('App navigation', () => {
     });
     expect(screen.getByText(/NEXUS Portfolio/i)).toBeInTheDocument();
     expect(screen.getByText(/Art Inventory/i)).toBeInTheDocument();
+    expect(screen.getByText(/Agent HQ/i)).toBeInTheDocument();
   });
 
   it('renders NEXUS sub-navigation by default', async () => {
@@ -83,6 +84,19 @@ describe('App navigation', () => {
     expect(screen.getByText('Dashboard')).toBeInTheDocument();
     expect(screen.getByText('Gallery')).toBeInTheDocument();
     expect(screen.getByText('Quick Lister')).toBeInTheDocument();
+  });
+
+  it('switches to Agent HQ when the tab is clicked', async () => {
+    await act(async () => {
+      render(<App />);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText(/Agent HQ/i));
+    });
+    expect(screen.getByText(/AGENT HQ.*DELEGATION MATRIX/i)).toBeInTheDocument();
+    expect(screen.getAllByText('PixelReaper').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('SalesBanshee').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('DataVoodoo').length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders footer', async () => {
