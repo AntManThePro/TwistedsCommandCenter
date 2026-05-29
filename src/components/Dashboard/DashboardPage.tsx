@@ -1,9 +1,10 @@
 import type { StatsData, ActivityEntry } from '../../types/inventory'
+import { allCategories } from '../../data/mockData'
 import StatsCard from './StatsCard'
 import RecentActivity from './RecentActivity'
 
 /** Max total categories defined in the data layer. */
-const TOTAL_CATEGORIES = 8
+const TOTAL_CATEGORIES = allCategories.length
 
 /**
  * Inventory value target used to normalise the Value Fill metric.
