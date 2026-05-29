@@ -34,7 +34,7 @@ export type PageId = 'dashboard' | 'inventory' | 'categories' | 'algorithm' | 's
 export interface StatsData {
   /** Sum of all item quantities in inventory. */
   totalItems: number
-  /** Count of distinct SKUs (individual item records). */
+  /** Count of inventory item records. */
   itemCount: number
   /** Number of items whose status is Low Stock or Out of Stock. */
   lowStockAlerts: number
