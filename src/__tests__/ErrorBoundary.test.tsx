@@ -82,11 +82,9 @@ describe('ErrorBoundary', () => {
 
   it('Reload button triggers window.location.reload', async () => {
     const user = userEvent.setup()
-    const reloadSpy = vi.fn()
-    Object.defineProperty(window, 'location', {
-      value: { reload: reloadSpy },
-      writable: true,
-    })
+    const reloadSpy = vi
+      .spyOn(window.location, 'reload')
+      .mockImplementation(() => {})
 
     render(
       <ErrorBoundary>
