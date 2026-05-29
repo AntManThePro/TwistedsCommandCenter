@@ -76,8 +76,13 @@ describe('ErrorBoundary', () => {
         <Bomb shouldThrow />
       </ErrorBoundary>,
     )
-    // The logger routes error-level calls through console.error
-    expect(errorSpy).toHaveBeenCalled()
+    // React also writes to console.error when a component throws, so assert
+    // that one of the captured calls includes the thrown Error rather than
+    // only checking that console.error was called at all.
+    const loggedThrownError = errorSpy.mock.calls.some((args) =>
+      args.some((arg) => arg instanceof Error && arg.message === 'Test render crash'),
+    )
+    expect(loggedThrownError).toBe(true)
   })
 
   it('Reload button triggers window.location.reload', async () => {
