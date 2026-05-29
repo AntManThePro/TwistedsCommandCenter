@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import type { InventoryItem, ActivityEntry, StatsData, ItemStatus } from '../types/inventory'
 import { mockInventoryItems, mockActivityEntries } from '../data/mockData'
+import { logger } from '../lib/logger'
 
 function deriveStatus(quantity: number): ItemStatus {
   if (quantity === 0) return 'Out of Stock'
@@ -46,6 +47,8 @@ export function useInventory() {
     }
     setActivities(prev => [activity, ...prev])
 
+    logger.info('inventory:add', { id: newItem.id, name: newItem.name, quantity: newItem.quantity })
+
     return newItem
   }, [])
 
@@ -85,6 +88,7 @@ export function useInventory() {
 
     setItems(prev => prev.map(item => (item.id === id ? updated : item)))
     setActivities(prev => [activity, ...prev])
+    logger.info(`inventory:${action}`, { id, name: updated.name, quantity: nextQuantity })
   }, [])
 
   const deleteItem = useCallback((id: string) => {
@@ -99,6 +103,7 @@ export function useInventory() {
         timestamp: localTimestampString(),
       }
       setActivities(prevAct => [activity, ...prevAct])
+      logger.info('inventory:remove', { id, name: item.name })
     }
 
     setItems(prev => prev.filter(i => i.id !== id))
@@ -108,6 +113,7 @@ export function useInventory() {
     const uniqueCategories = new Set(items.map(i => i.category))
     return {
       totalItems: items.reduce((sum, i) => sum + i.quantity, 0),
+      itemCount: items.length,
       lowStockAlerts: items.filter(i => i.status === 'Low Stock' || i.status === 'Out of Stock').length,
       categories: uniqueCategories.size,
       totalValue: items.reduce((sum, i) => sum + i.price * i.quantity, 0),
