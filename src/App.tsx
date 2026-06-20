@@ -9,8 +9,9 @@ const CommandCenter = lazy(() => import('./components/CommandCenter'));
 const Dashboard = lazy(() => import('./components/Dashboard'));
 const Gallery = lazy(() => import('./components/Gallery'));
 const QuickLister = lazy(() => import('./components/QuickLister'));
+const AgentHQ = lazy(() => import('./components/AgentHQ'));
 
-type MainView = 'nexus' | 'inventory';
+type MainView = 'nexus' | 'inventory' | 'agents';
 type NexusTab = 'neural' | 'algorithms' | 'systems' | 'artdeco';
 type InventoryTab = 'command' | 'dashboard' | 'gallery' | 'listings';
 
@@ -66,6 +67,9 @@ export default function App() {
           </NavButton>
           <NavButton active={mainView === 'inventory'} onClick={() => setMainView('inventory')}>
             📦 Art Inventory
+          </NavButton>
+          <NavButton active={mainView === 'agents'} onClick={() => setMainView('agents')}>
+            ⚡ Agent HQ
           </NavButton>
         </div>
 
@@ -126,6 +130,7 @@ export default function App() {
                 {inventoryTab === 'listings' && <QuickLister />}
               </>
             )}
+            {mainView === 'agents' && <AgentHQ />}
           </Suspense>
         </ErrorBoundary>
       </main>
