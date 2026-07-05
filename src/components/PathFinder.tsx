@@ -452,6 +452,11 @@ const PathFinder = memo(function PathFinder() {
     }
   }, []);
 
+  useEffect(() => {
+    return () => {
+      stopAnimation();
+    };
+  }, [stopAnimation]);
   const visualize = useCallback(() => {
     stopAnimation();
     setRunning(true);
