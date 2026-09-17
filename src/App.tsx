@@ -12,7 +12,7 @@ const QuickLister = lazy(() => import('./components/QuickLister'));
 const AgentHQ = lazy(() => import('./components/AgentHQ'));
 
 type MainView = 'nexus' | 'inventory' | 'agents';
-type NexusTab = 'neural' | 'algorithms' | 'systems' | 'artdeco';
+type NexusTab = 'neural' | 'algorithms' | 'systems' | 'artdeco' | 'prop';
 type InventoryTab = 'command' | 'dashboard' | 'gallery' | 'listings';
 
 const LoadingSpinner: React.FC = () => (
@@ -28,7 +28,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg)', color: '#dffcff' }}>
-      {/* Top Bar */}
       <header
         className="sticky top-0 z-10 backdrop-blur-sm"
         style={{
@@ -56,11 +55,10 @@ export default function App() {
               color: 'var(--green)',
             }}
           >
-            NEXUS // DOUBLEA // COMMAND CENTER
+            NEXUS // DOUBLEA // COMMAND CENTER // PAULIE
           </h1>
         </div>
 
-        {/* Main view switcher */}
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
           <NavButton active={mainView === 'nexus'} onClick={() => setMainView('nexus')}>
             ◈ NEXUS Portfolio
@@ -73,7 +71,6 @@ export default function App() {
           </NavButton>
         </div>
 
-        {/* Sub-nav for NEXUS */}
         {mainView === 'nexus' && (
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             <NavButton active={nexusTab === 'neural'} onClick={() => setNexusTab('neural')}>
@@ -88,10 +85,12 @@ export default function App() {
             <NavButton active={nexusTab === 'artdeco'} onClick={() => setNexusTab('artdeco')}>
               Art Deco Showcase
             </NavButton>
+            <NavButton active={nexusTab === 'prop'} onClick={() => setNexusTab('prop')}>
+              Prop Forge
+            </NavButton>
           </div>
         )}
 
-        {/* Sub-nav for Inventory */}
         {mainView === 'inventory' && (
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             <NavButton active={inventoryTab === 'command'} onClick={() => setInventoryTab('command')}>
@@ -110,7 +109,6 @@ export default function App() {
         )}
       </header>
 
-      {/* Main Content */}
       <main style={{ padding: '1rem' }}>
         <ErrorBoundary>
           <Suspense fallback={<LoadingSpinner />}>
@@ -120,6 +118,32 @@ export default function App() {
                 {nexusTab === 'algorithms' && <AlgorithmArena />}
                 {nexusTab === 'systems' && <SystemsPulse />}
                 {nexusTab === 'artdeco' && <ArtDecoShowcase />}
+                {nexusTab === 'prop' && (
+                  <div style={{ display: 'grid', gap: '12px' }}>
+                    <p style={{ color: '#ffcc00', letterSpacing: '0.12em', fontSize: 12 }}>
+                      FOR PAULIE @ TWISTED GENIUS — live drop
+                    </p>
+                    <iframe
+                      title="NEXUS Prop Forge"
+                      src="https://nexus-prop-forge-antmanthepros-projects.vercel.app/forge"
+                      style={{
+                        width: '100%',
+                        height: '75vh',
+                        border: '1px solid #00ff8733',
+                        borderRadius: 12,
+                        background: '#0a0a0f',
+                      }}
+                    />
+                    <a
+                      href="https://nexus-prop-forge-antmanthepros-projects.vercel.app"
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ color: '#60efff' }}
+                    >
+                      Open full pages →
+                    </a>
+                  </div>
+                )}
               </>
             )}
             {mainView === 'inventory' && (
@@ -136,7 +160,7 @@ export default function App() {
       </main>
 
       <footer style={{ textAlign: 'center', color: '#89b9c0', padding: '1rem', fontSize: '0.85rem' }}>
-        Built for AntManThePro // NEXUS aesthetic // Canvas + algorithmic interactivity
+        Built for AntManThePro // out for Paulie @ Twisted Genius // NEXUS
       </footer>
     </div>
   );
