@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shop captures · Twisted Genius</title>
+<style>
+  body { margin:0; font-family: Palatino, Georgia, serif; background:#f4efe6; color:#161412; }
+  header { background:#161412; color:#f4efe6; padding:16px; border-bottom:4px solid #b4843a; }
+  main { max-width:960px; margin:0 auto; padding:16px; }
+  .piece { background:#fffdf8; border:1px solid #e4d9c6; border-radius:14px; padding:14px; margin-bottom:14px; }
+  .shots { display:flex; gap:8px; overflow:auto; }
+  .shots img { width:180px; height:180px; object-fit:cover; border-radius:10px; background:#efe7da; }
+  .muted { color:#5c5348; }
+</style>
+</head>
+<body>
+<header>
+  <div style="letter-spacing:.16em;color:#b4843a;font-size:12px">TWISTED GENIUS</div>
+  <h1 style="margin:4px 0">Shop captures</h1>
+  <p style="color:#d9cbb6">Pieces Paul sent from the shop floor.</p>
+</header>
+<main id="board"><p class="muted">Loading captures…</p></main>
+<script>
+const base = new URL("./", location.href);
+fetch("./index.json", { cache: "no-store" }).then(r => r.json()).then(data => {
+  const pieces = (data && data.pieces) || [];
+  const board = document.getElementById("board");
+  if (!pieces.length) { board.innerHTML = "<p class='muted'>No pieces yet. They show up here after a shop send and a site rebuild.</p>"; return; }
+  board.innerHTML = pieces.map(p => {
+    const shots = (p.photos || []).map(slot => `<img src="${base}${p.slug}/${slot}.jpg" alt="${slot}">`).join("");
+    return `<article class="piece"><h2>${esc(p.name)}</h2><p class="muted">${esc(p.date)} · ${esc(p.materials)}</p><p>${esc(p.highlight)}</p><div class="shots">${shots}</div></article>`;
+  }).join("");
+}).catch(() => { document.getElementById("board").innerHTML = "<p class='muted'>No capture list yet.</p>"; });
+function esc(s) { return String(s ?? "").replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
+</script>
+</body>
+</html>
