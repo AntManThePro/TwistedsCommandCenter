@@ -13,7 +13,10 @@ const AgentHQ = lazy(() => import('./components/AgentHQ'));
 
 type MainView = 'nexus' | 'inventory' | 'agents';
 type NexusTab = 'neural' | 'algorithms' | 'systems' | 'artdeco' | 'prop';
-type InventoryTab = 'command' | 'dashboard' | 'gallery' | 'listings';
+type InventoryTab = 'command' | 'dashboard' | 'gallery' | 'listings' | 'shop';
+
+const SHOP = 'https://antmanthepro.github.io/TwistedsCommandCenter/shop/';
+const SHOP_BOARD = 'https://antmanthepro.github.io/TwistedsCommandCenter/shop/captures/';
 
 const LoadingSpinner: React.FC = () => (
   <div className="flex items-center justify-center min-h-64 text-[#60efff] text-xl">
@@ -28,87 +31,35 @@ export default function App() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg)', color: '#dffcff' }}>
-      <header
-        className="sticky top-0 z-10 backdrop-blur-sm"
-        style={{
-          padding: '0.8rem 1rem',
-          borderBottom: '1px solid var(--line)',
-          background: 'rgba(2, 4, 10, 0.9)',
-        }}
-      >
+      <header className="sticky top-0 z-10 backdrop-blur-sm" style={{ padding: '0.8rem 1rem', borderBottom: '1px solid var(--line)', background: 'rgba(2, 4, 10, 0.9)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.6rem' }}>
-          <span
-            style={{
-              width: '0.8rem',
-              height: '0.8rem',
-              borderRadius: '50%',
-              background: 'var(--green)',
-              boxShadow: '0 0 15px var(--green)',
-              display: 'inline-block',
-            }}
-          />
-          <h1
-            style={{
-              margin: 0,
-              fontSize: 'clamp(0.8rem, 2.2vw, 1.1rem)',
-              letterSpacing: '0.12em',
-              color: 'var(--green)',
-            }}
-          >
-            NEXUS // DOUBLEA // COMMAND CENTER // PAULIE
-          </h1>
+          <span style={{ width: '0.8rem', height: '0.8rem', borderRadius: '50%', background: 'var(--green)', boxShadow: '0 0 15px var(--green)', display: 'inline-block' }} />
+          <h1 style={{ margin: 0, fontSize: 'clamp(0.8rem, 2.2vw, 1.1rem)', letterSpacing: '0.12em', color: 'var(--green)' }}>NEXUS // DOUBLEA // COMMAND CENTER // PAULIE</h1>
         </div>
-
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
-          <NavButton active={mainView === 'nexus'} onClick={() => setMainView('nexus')}>
-            ◈ NEXUS Portfolio
-          </NavButton>
-          <NavButton active={mainView === 'inventory'} onClick={() => setMainView('inventory')}>
-            📦 Art Inventory
-          </NavButton>
-          <NavButton active={mainView === 'agents'} onClick={() => setMainView('agents')}>
-            ⚡ Agent HQ
-          </NavButton>
+          <NavButton active={mainView === 'nexus'} onClick={() => setMainView('nexus')}>NEXUS Portfolio</NavButton>
+          <NavButton active={mainView === 'inventory'} onClick={() => setMainView('inventory')}>Art Inventory</NavButton>
+          <NavButton active={mainView === 'agents'} onClick={() => setMainView('agents')}>Agent HQ</NavButton>
         </div>
-
         {mainView === 'nexus' && (
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <NavButton active={nexusTab === 'neural'} onClick={() => setNexusTab('neural')}>
-              Neural Forge
-            </NavButton>
-            <NavButton active={nexusTab === 'algorithms'} onClick={() => setNexusTab('algorithms')}>
-              Algorithm Arena
-            </NavButton>
-            <NavButton active={nexusTab === 'systems'} onClick={() => setNexusTab('systems')}>
-              Systems Pulse
-            </NavButton>
-            <NavButton active={nexusTab === 'artdeco'} onClick={() => setNexusTab('artdeco')}>
-              Art Deco Showcase
-            </NavButton>
-            <NavButton active={nexusTab === 'prop'} onClick={() => setNexusTab('prop')}>
-              Prop Forge
-            </NavButton>
+            <NavButton active={nexusTab === 'neural'} onClick={() => setNexusTab('neural')}>Neural Forge</NavButton>
+            <NavButton active={nexusTab === 'algorithms'} onClick={() => setNexusTab('algorithms')}>Algorithm Arena</NavButton>
+            <NavButton active={nexusTab === 'systems'} onClick={() => setNexusTab('systems')}>Systems Pulse</NavButton>
+            <NavButton active={nexusTab === 'artdeco'} onClick={() => setNexusTab('artdeco')}>Art Deco Showcase</NavButton>
+            <NavButton active={nexusTab === 'prop'} onClick={() => setNexusTab('prop')}>Prop Forge</NavButton>
           </div>
         )}
-
         {mainView === 'inventory' && (
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <NavButton active={inventoryTab === 'command'} onClick={() => setInventoryTab('command')}>
-              Command Center
-            </NavButton>
-            <NavButton active={inventoryTab === 'dashboard'} onClick={() => setInventoryTab('dashboard')}>
-              Dashboard
-            </NavButton>
-            <NavButton active={inventoryTab === 'gallery'} onClick={() => setInventoryTab('gallery')}>
-              Gallery
-            </NavButton>
-            <NavButton active={inventoryTab === 'listings'} onClick={() => setInventoryTab('listings')}>
-              Quick Lister
-            </NavButton>
+            <NavButton active={inventoryTab === 'command'} onClick={() => setInventoryTab('command')}>Command Center</NavButton>
+            <NavButton active={inventoryTab === 'dashboard'} onClick={() => setInventoryTab('dashboard')}>Dashboard</NavButton>
+            <NavButton active={inventoryTab === 'gallery'} onClick={() => setInventoryTab('gallery')}>Gallery</NavButton>
+            <NavButton active={inventoryTab === 'listings'} onClick={() => setInventoryTab('listings')}>Quick Lister</NavButton>
+            <NavButton active={inventoryTab === 'shop'} onClick={() => setInventoryTab('shop')}>Shop captures</NavButton>
           </div>
         )}
       </header>
-
       <main style={{ padding: '1rem' }}>
         <ErrorBoundary>
           <Suspense fallback={<LoadingSpinner />}>
@@ -120,28 +71,8 @@ export default function App() {
                 {nexusTab === 'artdeco' && <ArtDecoShowcase />}
                 {nexusTab === 'prop' && (
                   <div style={{ display: 'grid', gap: '12px' }}>
-                    <p style={{ color: '#ffcc00', letterSpacing: '0.12em', fontSize: 12 }}>
-                      FOR PAULIE @ TWISTED GENIUS — live drop
-                    </p>
-                    <iframe
-                      title="NEXUS Prop Forge"
-                      src="https://nexus-prop-forge-antmanthepros-projects.vercel.app/forge"
-                      style={{
-                        width: '100%',
-                        height: '75vh',
-                        border: '1px solid #00ff8733',
-                        borderRadius: 12,
-                        background: '#0a0a0f',
-                      }}
-                    />
-                    <a
-                      href="https://nexus-prop-forge-antmanthepros-projects.vercel.app"
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ color: '#60efff' }}
-                    >
-                      Open full pages →
-                    </a>
+                    <p style={{ color: '#ffcc00', letterSpacing: '0.12em', fontSize: 12 }}>FOR PAULIE @ TWISTED GENIUS — live drop</p>
+                    <iframe title="NEXUS Prop Forge" src="https://nexus-prop-forge-antmanthepros-projects.vercel.app/forge" style={{ width: '100%', height: '75vh', border: '1px solid #00ff8733', borderRadius: 12, background: '#0a0a0f' }} />
                   </div>
                 )}
               </>
@@ -152,42 +83,26 @@ export default function App() {
                 {inventoryTab === 'dashboard' && <Dashboard />}
                 {inventoryTab === 'gallery' && <Gallery />}
                 {inventoryTab === 'listings' && <QuickLister />}
+                {inventoryTab === 'shop' && (
+                  <div style={{ display: 'grid', gap: 12 }}>
+                    <p style={{ color: '#ffcc00' }}>Paul shoots on the phone. Captures land here.</p>
+                    <a href={SHOP} style={{ color: '#60efff' }}>Open the shop floor phone app</a>
+                    <iframe title="Shop captures" src={SHOP_BOARD} style={{ width: '100%', height: '75vh', border: '1px solid #00ff8733', borderRadius: 12, background: '#f4efe6' }} />
+                  </div>
+                )}
               </>
             )}
             {mainView === 'agents' && <AgentHQ />}
           </Suspense>
         </ErrorBoundary>
       </main>
-
-      <footer style={{ textAlign: 'center', color: '#89b9c0', padding: '1rem', fontSize: '0.85rem' }}>
-        Built for AntManThePro // out for Paulie @ Twisted Genius // NEXUS
-      </footer>
+      <footer style={{ textAlign: 'center', color: '#89b9c0', padding: '1rem', fontSize: '0.85rem' }}>Built for AntManThePro // out for Paulie @ Twisted Genius // NEXUS</footer>
     </div>
   );
 }
 
-interface NavButtonProps {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}
-
-function NavButton({ active, onClick, children }: NavButtonProps) {
+function NavButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
-    <button
-      onClick={onClick}
-      style={{
-        border: `1px solid ${active ? 'var(--green)' : 'var(--line)'}`,
-        background: active ? 'rgba(0,255,135,0.1)' : 'rgba(8, 14, 24, 0.8)',
-        color: active ? 'var(--green)' : '#c2f9ff',
-        padding: '0.5rem 0.8rem',
-        cursor: 'pointer',
-        borderRadius: '0.5rem',
-        boxShadow: active ? '0 0 18px rgba(0, 255, 135, 0.35)' : 'none',
-        fontSize: '0.85rem',
-      }}
-    >
-      {children}
-    </button>
+    <button onClick={onClick} style={{ border: `1px solid ${active ? 'var(--green)' : 'var(--line)'}`, background: active ? 'rgba(0,255,135,0.1)' : 'rgba(8, 14, 24, 0.8)', color: active ? 'var(--green)' : '#c2f9ff', padding: '0.5rem 0.8rem', cursor: 'pointer', borderRadius: '0.5rem', boxShadow: active ? '0 0 18px rgba(0, 255, 135, 0.35)' : 'none', fontSize: '0.85rem' }}>{children}</button>
   );
 }
