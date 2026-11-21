@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "allowImportingTsExtensions": false,
+    "strict": false,
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "types": ["jest", "@testing-library/jest-dom"]
+  },
+  "include": ["src"]
+}
