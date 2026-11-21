@@ -8,6 +8,7 @@ beforeAll(() => {
     clearRect: jest.fn(),
     fillRect: jest.fn(),
     beginPath: jest.fn(),
+    closePath: jest.fn(),
     arc: jest.fn(),
     fill: jest.fn(),
     stroke: jest.fn(),
@@ -72,6 +73,7 @@ describe('App navigation', () => {
     });
     expect(screen.getByText(/NEXUS Portfolio/i)).toBeInTheDocument();
     expect(screen.getByText(/Art Inventory/i)).toBeInTheDocument();
+    expect(screen.getByText(/Agent HQ/i)).toBeInTheDocument();
   });
 
   it('renders NEXUS sub-navigation by default', async () => {
@@ -86,6 +88,17 @@ describe('App navigation', () => {
     expect(screen.getAllByText('CipherMatrix').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText('Fractal Engine').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText('BeatForge').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Art Deco Showcase').length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('switches to Art Deco Showcase when the tab is clicked', async () => {
+    await act(async () => {
+      render(<App />);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText('Art Deco Showcase'));
+    });
+    expect(screen.getByText(/Art Deco Pyramid Jewelry Box/i)).toBeInTheDocument();
   });
 
   it('switches to inventory sub-navigation when Art Inventory is clicked', async () => {
@@ -147,10 +160,23 @@ describe('App navigation', () => {
     expect(screen.getAllByText('BeatForge').length).toBeGreaterThanOrEqual(1);
   });
 
+  it('switches to Agent HQ when the tab is clicked', async () => {
+    await act(async () => {
+      render(<App />);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByText(/Agent HQ/i));
+    });
+    expect(screen.getByText(/AGENT HQ.*DELEGATION MATRIX/i)).toBeInTheDocument();
+    expect(screen.getAllByText('PixelReaper').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('SalesBanshee').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('DataVoodoo').length).toBeGreaterThanOrEqual(1);
+  });
+
   it('renders footer', async () => {
     await act(async () => {
       render(<App />);
     });
-    expect(screen.getByText(/NEXUS aesthetic/i)).toBeInTheDocument();
+    expect(screen.getByText(/Built for AntManThePro.*NEXUS/i)).toBeInTheDocument();
   });
 });

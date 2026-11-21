@@ -17,6 +17,7 @@ body {
   font-family: Inter, Segoe UI, system-ui, sans-serif;
   background: radial-gradient(circle at 20% 20%, rgba(96, 239, 255, 0.15), transparent 40%),
     radial-gradient(circle at 85% 10%, rgba(255, 0, 128, 0.18), transparent 35%),
+    radial-gradient(circle at 50% 100%, rgba(255, 204, 0, 0.14), transparent 30%),
     var(--bg);
   color: #dffcff;
   min-height: 100vh;
@@ -76,6 +77,8 @@ body {
 
 main {
   padding: 1rem;
+  display: grid;
+  gap: 1rem;
 }
 
 .view {
@@ -92,6 +95,7 @@ main {
   border: 1px solid var(--line);
   border-radius: 0.8rem;
   padding: 0.8rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.24), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
 }
 
 .panel h2 {
@@ -110,6 +114,54 @@ main {
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem 0.8rem;
+}
+
+.mission-deck {
+  display: grid;
+  gap: 1rem;
+}
+
+.deck-grid,
+.readout-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.deck-grid {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.deck-card,
+.readout {
+  border: 1px solid rgba(96, 239, 255, 0.18);
+  background: linear-gradient(180deg, rgba(6, 12, 24, 0.92), rgba(4, 8, 18, 0.72));
+  border-radius: 0.8rem;
+  padding: 0.75rem 0.9rem;
+}
+
+.deck-label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--cyan);
+  margin-bottom: 0.35rem;
+}
+
+.deck-card strong,
+.readout strong {
+  font-size: 1rem;
+  color: #fff2af;
+}
+
+.readout-grid {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  margin-top: 0.8rem;
+}
+
+.readout {
+  color: #9ed9de;
+  font-size: 0.82rem;
 }
 
 .controls label {
@@ -140,6 +192,10 @@ button:hover {
   color: var(--yellow);
 }
 
+button:active {
+  transform: translateY(1px);
+}
+
 canvas {
   width: 100%;
   max-width: 100%;
@@ -147,6 +203,8 @@ canvas {
   border: 1px solid var(--line);
   background: linear-gradient(180deg, rgba(3, 8, 16, 0.92), rgba(1, 3, 8, 0.95));
   min-height: 280px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03), 0 28px 70px rgba(0, 0, 0, 0.35);
+  touch-action: none;
 }
 
 .stats {
@@ -166,7 +224,8 @@ footer {
     grid-template-columns: 1fr;
   }
 
-  .panel {
+  .panel,
+  .mission-deck {
     max-width: 980px;
     margin: 0 auto;
   }
@@ -174,5 +233,22 @@ footer {
   canvas {
     max-width: 980px;
     margin: 0 auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .topbar {
+    padding: 0.8rem;
+  }
+
+  .controls {
+    align-items: stretch;
+  }
+
+  .controls label,
+  button,
+  select,
+  input[type='range'] {
+    width: 100%;
   }
 }
