@@ -1,162 +1,131 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
+import type { InventoryItem, ActivityEntry, StatsData, ItemStatus } from '../types/inventory'
+import { mockInventoryItems, mockActivityEntries } from '../data/mockData'
+import { logger } from '../lib/logger'
 
-export interface Artwork {
-  id: number;
-  title: string;
-  category: 'sculpture' | 'painting' | 'mixed-media' | 'functional-art' | 'installation' | 'jewelry' | 'heirloom';
-  location: string;
-  price: number;
-  materials: string;
-  dimensions: string;
-  status: 'available' | 'sold';
-  dateAdded: string;
+function deriveStatus(quantity: number): ItemStatus {
+  if (quantity === 0) return 'Out of Stock'
+  if (quantity <= 5) return 'Low Stock'
+  return 'In Stock'
 }
 
-export interface InventoryStats {
-  totalPieces: number;
-  available: number;
-  sold: number;
-  totalValue: number;
-  avgPrice: number;
-  conversionRate: number;
+function localDateString(): string {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
-export interface InventoryCategoryBreakdown {
-  [key: string]: number;
+function localTimestampString(): string {
+  const d = new Date()
+  const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+  return `${localDateString()} ${time}`
 }
-
-export interface InventoryLocationBreakdown {
-  [key: string]: number;
-}
-
-const STORAGE_KEY = 'twisted-artwork';
 
 export function useInventory() {
-  const [artworks, setArtworks] = useState<Artwork[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // Load from localStorage on mount
+  const [items, setItems] = useState<InventoryItem[]>(mockInventoryItems)
+  const [activities, setActivities] = useState<ActivityEntry[]>(mockActivityEntries)
+  const itemsRef = useRef<InventoryItem[]>(mockInventoryItems)
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        setArtworks(JSON.parse(saved));
+    itemsRef.current = items
+  }, [items])
+
+  const addItem = useCallback((item: Omit<InventoryItem, 'id' | 'status' | 'lastUpdated'>) => {
+    const newItem: InventoryItem = {
+      ...item,
+      id: crypto.randomUUID(),
+      status: deriveStatus(item.quantity),
+      lastUpdated: localDateString(),
+    }
+
+    setItems(prev => [newItem, ...prev])
+
+    const activity: ActivityEntry = {
+      id: crypto.randomUUID(),
+      action: 'added',
+      itemName: item.name,
+      details: `Added ${item.quantity} units to inventory`,
+      timestamp: localTimestampString(),
+    }
+    setActivities(prev => [activity, ...prev])
+
+    logger.info('inventory:add', { id: newItem.id, name: newItem.name, quantity: newItem.quantity })
+
+    return newItem
+  }, [])
+
+  const updateItem = useCallback((id: string, updates: Partial<Omit<InventoryItem, 'id' | 'status' | 'lastUpdated'>>) => {
+    const existingItem = itemsRef.current.find(item => item.id === id)
+
+    if (!existingItem) return
+
+    const nextQuantity = updates.quantity ?? existingItem.quantity
+    const nextStatus = updates.quantity !== undefined ? deriveStatus(updates.quantity) : existingItem.status
+
+    const updated: InventoryItem = {
+      ...existingItem,
+      ...updates,
+      status: nextStatus,
+      lastUpdated: localDateString(),
+    }
+
+    const isRestock =
+      updates.quantity !== undefined &&
+      (existingItem.status === 'Out of Stock' || existingItem.status === 'Low Stock') &&
+      nextStatus === 'In Stock'
+    const action: ActivityEntry['action'] = isRestock ? 'restocked' : 'updated'
+    const details = isRestock
+      ? `Restocked quantity ${existingItem.quantity} → ${nextQuantity} units`
+      : updates.quantity !== undefined
+        ? `Updated item; quantity is now ${nextQuantity}`
+        : `Updated item details`
+
+    const activity: ActivityEntry = {
+      id: crypto.randomUUID(),
+      action,
+      itemName: updated.name,
+      details,
+      timestamp: localTimestampString(),
+    }
+
+    setItems(prev => prev.map(item => (item.id === id ? updated : item)))
+    setActivities(prev => [activity, ...prev])
+    logger.info(`inventory:${action}`, { id, name: updated.name, quantity: nextQuantity })
+  }, [])
+
+  const deleteItem = useCallback((id: string) => {
+    const item = itemsRef.current.find(i => i.id === id)
+
+    if (item) {
+      const activity: ActivityEntry = {
+        id: crypto.randomUUID(),
+        action: 'removed',
+        itemName: item.name,
+        details: `Removed from inventory`,
+        timestamp: localTimestampString(),
       }
-    } catch (error) {
-      console.error('Failed to load inventory:', error);
-    } finally {
-      setLoading(false);
+      setActivities(prevAct => [activity, ...prevAct])
+      logger.info('inventory:remove', { id, name: item.name })
     }
-  }, []);
 
-  // Persist to localStorage whenever artworks change
-  useEffect(() => {
-    if (!loading) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(artworks));
-    }
-  }, [artworks, loading]);
+    setItems(prev => prev.filter(i => i.id !== id))
+  }, [])
 
-  const addArtwork = useCallback((artwork: Omit<Artwork, 'id' | 'dateAdded'>) => {
-    const newArtwork: Artwork = {
-      ...artwork,
-      id: Date.now(),
-      dateAdded: new Date().toLocaleDateString(),
-    };
-    setArtworks((prev) => [...prev, newArtwork]);
-    return newArtwork;
-  }, []);
-
-  const updateArtwork = useCallback((id: number, updates: Partial<Artwork>) => {
-    setArtworks((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, ...updates } : item))
-    );
-  }, []);
-
-  const deleteArtwork = useCallback((id: number) => {
-    setArtworks((prev) => prev.filter((item) => item.id !== id));
-  }, []);
-
-  const updateStatus = useCallback(
-    (id: number, status: 'available' | 'sold') => {
-      updateArtwork(id, { status });
-    },
-    [updateArtwork]
-  );
-
-  const getStats = useCallback((): InventoryStats => {
-    const total = artworks.length;
-    let availableCount = 0;
-    let soldCount = 0;
-    let totalValue = 0;
-    for (const a of artworks) {
-      if (a.status === 'available') availableCount++;
-      else if (a.status === 'sold') soldCount++;
-      totalValue += a.price;
-    }
-    const avgPrice = total > 0 ? totalValue / total : 0;
-    const conversionRate = total > 0 ? Math.round((soldCount / total) * 100) : 0;
-
+  const stats: StatsData = useMemo(() => {
+    const uniqueCategories = new Set(items.map(i => i.category))
     return {
-      totalPieces: total,
-      available: availableCount,
-      sold: soldCount,
-      totalValue,
-      avgPrice,
-      conversionRate,
-    };
-  }, [artworks]);
-
-  const getCategoryBreakdown = useCallback((): InventoryCategoryBreakdown => {
-    return artworks.reduce((acc, item) => {
-      acc[item.category] = (acc[item.category] || 0) + 1;
-      return acc;
-    }, {} as InventoryCategoryBreakdown);
-  }, [artworks]);
-
-  const getLocationBreakdown = useCallback((): InventoryLocationBreakdown => {
-    return artworks.reduce((acc, item) => {
-      acc[item.location] = (acc[item.location] || 0) + 1;
-      return acc;
-    }, {} as InventoryLocationBreakdown);
-  }, [artworks]);
-
-  const getAvailableArtworks = useCallback(() => {
-    return artworks.filter((a) => a.status === 'available');
-  }, [artworks]);
-
-  const searchArtworks = useCallback(
-    (query: string, category?: string) => {
-      let filtered = artworks;
-
-      if (query) {
-        const lowercaseQuery = query.toLowerCase();
-        filtered = filtered.filter(
-          (a) =>
-            a.title.toLowerCase().includes(lowercaseQuery) ||
-            a.materials?.toLowerCase().includes(lowercaseQuery)
-        );
-      }
-
-      if (category && category !== 'all') {
-        filtered = filtered.filter((a) => a.category === category);
-      }
-
-      return filtered;
-    },
-    [artworks]
-  );
+      totalItems: items.reduce((sum, i) => sum + i.quantity, 0),
+      itemCount: items.length,
+      lowStockAlerts: items.filter(i => i.status === 'Low Stock' || i.status === 'Out of Stock').length,
+      categories: uniqueCategories.size,
+      totalValue: items.reduce((sum, i) => sum + i.price * i.quantity, 0),
+    }
+  }, [items])
 
   return {
-    artworks,
-    loading,
-    addArtwork,
-    updateArtwork,
-    deleteArtwork,
-    updateStatus,
-    getStats,
-    getCategoryBreakdown,
-    getLocationBreakdown,
-    getAvailableArtworks,
-    searchArtworks,
-  };
+    items,
+    activities,
+    stats,
+    addItem,
+    updateItem,
+    deleteItem,
+  }
 }
