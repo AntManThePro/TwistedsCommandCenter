@@ -190,6 +190,8 @@ const FractalEngine = memo(function FractalEngine() {
   const [rendering, setRendering] = useState(false);
   const [coords, setCoords] = useState({ re: 0, im: 0 });
   const [zoomLevel, setZoomLevel] = useState(220);
+  const renderParamsRef = useRef({ fractal, maxIter, palette, juliaCx, juliaCy });
+  renderParamsRef.current = { fractal, maxIter, palette, juliaCx, juliaCy };
 
   // Trigger fractal render (deferred to avoid blocking UI)
   const scheduleRender = useCallback((
@@ -227,24 +229,28 @@ const FractalEngine = memo(function FractalEngine() {
     }, 30);
   }, []);
 
-  // Resize canvas + initial render
+  // Resize canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const resize = () => {
+    const resizeCanvas = () => {
       const w = Math.min(canvas.parentElement?.clientWidth ?? 700, 900);
       canvas.width = w;
       canvas.height = Math.round(w * 0.56);
+    };
+    const resize = () => {
+      resizeCanvas();
+      const { fractal, maxIter, palette, juliaCx, juliaCy } = renderParamsRef.current;
       scheduleRender(fractal, maxIter, palette, juliaCx, juliaCy);
     };
-    resize();
+    resizeCanvas();
     window.addEventListener('resize', resize);
     return () => {
       window.removeEventListener('resize', resize);
       if (renderIdRef.current) clearTimeout(renderIdRef.current);
     };
-  }, [fractal, maxIter, palette, juliaCx, juliaCy, scheduleRender]);
+  }, [scheduleRender]);
 
   // Re-render when params change
   useEffect(() => {

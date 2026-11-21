@@ -58,6 +58,10 @@ global.AudioContext = jest.fn().mockImplementation(() => ({
   destination: {},
   sampleRate: 44100,
 })) as unknown as typeof AudioContext;
+Object.defineProperty(window, 'AudioContext', {
+  configurable: true,
+  value: global.AudioContext,
+});
 
 describe('App navigation', () => {
   it('renders NEXUS brand header', async () => {
@@ -119,45 +123,44 @@ describe('App navigation', () => {
       render(<App />);
     });
     // PathFinder nav button is visible in the NEXUS sub-nav
-    const pfBtn = screen.getByText('PathFinder');
+    const pfBtn = screen.getByRole('button', { name: 'PathFinder' });
     await act(async () => {
       fireEvent.click(pfBtn);
     });
-    // After clicking, "PathFinder" should still appear (nav + lazy heading if loaded)
-    expect(screen.getAllByText('PathFinder').length).toBeGreaterThanOrEqual(1);
+    expect(await screen.findByRole('heading', { name: 'PathFinder' })).toBeInTheDocument();
   });
 
   it('switches to CipherMatrix tab', async () => {
     await act(async () => {
       render(<App />);
     });
-    const cmBtn = screen.getByText('CipherMatrix');
+    const cmBtn = screen.getByRole('button', { name: 'CipherMatrix' });
     await act(async () => {
       fireEvent.click(cmBtn);
     });
-    expect(screen.getAllByText('CipherMatrix').length).toBeGreaterThanOrEqual(1);
+    expect(await screen.findByRole('heading', { name: 'CipherMatrix' })).toBeInTheDocument();
   });
 
   it('switches to Fractal Engine tab', async () => {
     await act(async () => {
       render(<App />);
     });
-    const feBtn = screen.getByText('Fractal Engine');
+    const feBtn = screen.getByRole('button', { name: 'Fractal Engine' });
     await act(async () => {
       fireEvent.click(feBtn);
     });
-    expect(screen.getAllByText('Fractal Engine').length).toBeGreaterThanOrEqual(1);
+    expect(await screen.findByRole('heading', { name: 'Fractal Engine' })).toBeInTheDocument();
   });
 
   it('switches to BeatForge tab', async () => {
     await act(async () => {
       render(<App />);
     });
-    const bfBtn = screen.getByText('BeatForge');
+    const bfBtn = screen.getByRole('button', { name: 'BeatForge' });
     await act(async () => {
       fireEvent.click(bfBtn);
     });
-    expect(screen.getAllByText('BeatForge').length).toBeGreaterThanOrEqual(1);
+    expect(await screen.findByRole('heading', { name: 'BeatForge' })).toBeInTheDocument();
   });
 
   it('switches to Agent HQ when the tab is clicked', async () => {

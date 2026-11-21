@@ -116,6 +116,11 @@ const CipherMatrix = memo(function CipherMatrix() {
   const [shift, setShift] = useState(7);
   const [output, setOutput] = useState('');
   const [copied, setCopied] = useState(false);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => {
+    if (copyTimeoutRef.current !== null) clearTimeout(copyTimeoutRef.current);
+  }, []);
 
   // Re-encode whenever inputs change
   useEffect(() => {
@@ -201,7 +206,11 @@ const CipherMatrix = memo(function CipherMatrix() {
       .writeText(output)
       .then(() => {
         setCopied(true);
-        setTimeout(() => setCopied(false), 1800);
+        if (copyTimeoutRef.current !== null) clearTimeout(copyTimeoutRef.current);
+        copyTimeoutRef.current = setTimeout(() => {
+          setCopied(false);
+          copyTimeoutRef.current = null;
+        }, 1800);
       })
       .catch((err) => {
         console.error('Failed to copy text to clipboard:', err);

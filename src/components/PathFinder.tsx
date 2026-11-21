@@ -291,12 +291,6 @@ const PathFinder = memo(function PathFinder() {
   // -------------------------------------------------------------------------
   // Canvas sizing — use 100% width, fixed aspect
   // -------------------------------------------------------------------------
-  const getCellSize = useCallback((): number => {
-    const canvas = canvasRef.current;
-    if (!canvas) return 16;
-    return canvas.width / COLS;
-  }, []);
-
   const getCell = useCallback((clientX: number, clientY: number): [number, number] | null => {
     const canvas = canvasRef.current;
     if (!canvas) return null;

@@ -199,6 +199,7 @@ const BeatForge = memo(function BeatForge() {
   }, [playing]);
 
   const start = useCallback(() => {
+    if (schedulerIdRef.current !== null) return;
     if (!audioCtxRef.current) {
       audioCtxRef.current = makeAudioContext();
     }
@@ -211,7 +212,8 @@ const BeatForge = memo(function BeatForge() {
   }, [scheduleNotes]);
 
   const stop = useCallback(() => {
-    if (schedulerIdRef.current) clearInterval(schedulerIdRef.current);
+    if (schedulerIdRef.current !== null) clearInterval(schedulerIdRef.current);
+    schedulerIdRef.current = null;
     setPlaying(false);
     setCurrentStep(-1);
   }, []);
@@ -261,7 +263,8 @@ const BeatForge = memo(function BeatForge() {
 
   // Cleanup
   useEffect(() => () => {
-    if (schedulerIdRef.current) clearInterval(schedulerIdRef.current);
+    if (schedulerIdRef.current !== null) clearInterval(schedulerIdRef.current);
+    schedulerIdRef.current = null;
     audioCtxRef.current?.close();
   }, []);
 
