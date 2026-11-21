@@ -7,10 +7,9 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
-            return 'vendor';
-          }
+        manualChunks: (id: string) => {
+          if (/[\\/]node_modules[\\/]react(-dom)?[\\/]/.test(id)) return 'vendor';
+          return undefined;
         },
       },
     },

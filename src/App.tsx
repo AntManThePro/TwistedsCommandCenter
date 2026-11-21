@@ -4,6 +4,10 @@ import ErrorBoundary from './components/ErrorBoundary';
 const NeuralForge = lazy(() => import('./components/NeuralForge'));
 const AlgorithmArena = lazy(() => import('./components/AlgorithmArena'));
 const SystemsPulse = lazy(() => import('./components/SystemsPulse'));
+const PathFinder = lazy(() => import('./components/PathFinder'));
+const CipherMatrix = lazy(() => import('./components/CipherMatrix'));
+const FractalEngine = lazy(() => import('./components/FractalEngine'));
+const BeatForge = lazy(() => import('./components/BeatForge'));
 const ArtDecoShowcase = lazy(() => import('./components/ArtDecoShowcase'));
 const CommandCenter = lazy(() => import('./components/CommandCenter'));
 const Dashboard = lazy(() => import('./components/Dashboard'));
@@ -12,7 +16,7 @@ const QuickLister = lazy(() => import('./components/QuickLister'));
 const AgentHQ = lazy(() => import('./components/AgentHQ'));
 
 type MainView = 'nexus' | 'inventory' | 'agents';
-type NexusTab = 'neural' | 'algorithms' | 'systems' | 'artdeco' | 'prop';
+type NexusTab = 'neural' | 'algorithms' | 'systems' | 'pathfinder' | 'cipher' | 'fractal' | 'beat' | 'artdeco' | 'prop';
 type InventoryTab = 'command' | 'dashboard' | 'gallery' | 'listings' | 'shop';
 
 const SHOP = 'https://antmanthepro.github.io/TwistedsCommandCenter/shop/';
@@ -43,9 +47,27 @@ export default function App() {
         </div>
         {mainView === 'nexus' && (
           <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-            <NavButton active={nexusTab === 'neural'} onClick={() => setNexusTab('neural')}>Neural Forge</NavButton>
-            <NavButton active={nexusTab === 'algorithms'} onClick={() => setNexusTab('algorithms')}>Algorithm Arena</NavButton>
-            <NavButton active={nexusTab === 'systems'} onClick={() => setNexusTab('systems')}>Systems Pulse</NavButton>
+            <NavButton active={nexusTab === 'neural'} onClick={() => setNexusTab('neural')}>
+              Neural Forge
+            </NavButton>
+            <NavButton active={nexusTab === 'algorithms'} onClick={() => setNexusTab('algorithms')}>
+              Algorithm Arena
+            </NavButton>
+            <NavButton active={nexusTab === 'systems'} onClick={() => setNexusTab('systems')}>
+              Systems Pulse
+            </NavButton>
+            <NavButton active={nexusTab === 'pathfinder'} onClick={() => setNexusTab('pathfinder')}>
+              PathFinder
+            </NavButton>
+            <NavButton active={nexusTab === 'cipher'} onClick={() => setNexusTab('cipher')}>
+              CipherMatrix
+            </NavButton>
+            <NavButton active={nexusTab === 'fractal'} onClick={() => setNexusTab('fractal')}>
+              Fractal Engine
+            </NavButton>
+            <NavButton active={nexusTab === 'beat'} onClick={() => setNexusTab('beat')}>
+              BeatForge
+            </NavButton>
             <NavButton active={nexusTab === 'artdeco'} onClick={() => setNexusTab('artdeco')}>Art Deco Showcase</NavButton>
             <NavButton active={nexusTab === 'prop'} onClick={() => setNexusTab('prop')}>Prop Forge</NavButton>
           </div>
@@ -68,6 +90,10 @@ export default function App() {
                 {nexusTab === 'neural' && <NeuralForge />}
                 {nexusTab === 'algorithms' && <AlgorithmArena />}
                 {nexusTab === 'systems' && <SystemsPulse />}
+                {nexusTab === 'pathfinder' && <PathFinder />}
+                {nexusTab === 'cipher' && <CipherMatrix />}
+                {nexusTab === 'fractal' && <FractalEngine />}
+                {nexusTab === 'beat' && <BeatForge />}
                 {nexusTab === 'artdeco' && <ArtDecoShowcase />}
                 {nexusTab === 'prop' && (
                   <div style={{ display: 'grid', gap: '12px' }}>
